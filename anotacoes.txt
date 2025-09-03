@@ -1,33 +1,105 @@
-Aula 5 - Começanmdo o projeto
+M11 - Configurando o Django Rest Framework
 
-    1 - Criamos um repositório do Git
-    2 - fizemos a instalação do poetry
-        Aqui para poder usar globalmente tivemos que fazer uma configuração ao Path do windows   
-            Siga estes passos para adicionar o Poetry ao PATH do Windows:
-                1 - Copie este caminho: C:\Users\frick\AppData\Roaming\Python\Python313\Scripts
-                2 - Abra o menu Iniciar e pesquise por “variáveis de ambiente”.
-                3 - Clique em “Editar variáveis de ambiente do sistema”.
-                4 - Na janela que abrir, clique em “Variáveis de Ambiente…”.
-                5 - Em “Variáveis de usuário”, selecione a variável chamada Path e clique em “Editar…”.
-                6 - Clique em “Novo” e cole o caminho copiado.
-                7 - Feche e reabra o terminal do VS Code.
+    Aula 5 - Começanmdo o projeto
 
-        Caso não faça ainda é possivel utilizar o poetry com : python -m poetry --version
+        1 - Criamos um repositório do Git
+        2 - fizemos a instalação do poetry
+            Aqui para poder usar globalmente tivemos que fazer uma configuração ao Path do windows   
+                Siga estes passos para adicionar o Poetry ao PATH do Windows:
+                    1 - Copie este caminho: C:\Users\frick\AppData\Roaming\Python\Python313\Scripts
+                    2 - Abra o menu Iniciar e pesquise por “variáveis de ambiente”.
+                    3 - Clique em “Editar variáveis de ambiente do sistema”.
+                    4 - Na janela que abrir, clique em “Variáveis de Ambiente…”.
+                    5 - Em “Variáveis de usuário”, selecione a variável chamada Path e clique em “Editar…”.
+                    6 - Clique em “Novo” e cole o caminho copiado.
+                    7 - Feche e reabra o terminal do VS Code.
 
-    3 - iniciamos o poetry no terminal com : poetry init
-        e instalamos os pacotes pytest e factory-boy
+            Caso não faça ainda é possivel utilizar o poetry com : python -m poetry --version
 
-    4 - Adcionamos Django no poetry com : poetry add django
+        3 - iniciamos o poetry no terminal com : poetry init
+            e instalamos os pacotes pytest e factory-boy
 
-    5 - tive que criar uma pasta com o __init__.py
+        4 - Adcionamos Django no poetry com : poetry add django
 
-    6 - começar projeto com: poetry run django-admin.py startproject bookstore .
-        caso não vá verifique a versão poetry se necessário instale novamente
+        5 - tive que criar uma pasta com o __init__.py
 
-    7 - Criamos um projeto de api
-        poetry run django-admin.py startapp api
-        e apos isso o migrate
-        poetry run python manage.py migrate
+        6 - começar projeto com: poetry run django-admin.py startproject bookstore .
+            caso não vá verifique a versão poetry se necessário instale novamente
 
-    8 - Rodando o servidor
-        poetry run python manage.py runserver
+        7 - Criamos um projeto de api
+            poetry run django-admin.py startapp api
+            e apos isso o migrate
+            poetry run python manage.py migrate
+
+        8 - Rodando o servidor
+            poetry run python manage.py runserver
+
+        9 - Instalando djangorestframework
+            poetry add djangorestframework
+
+            poetry update - para atualizar com novas dependencias o poetry.lock
+
+            em settings.py adcionar 'rest_framework' em INSTALLED_APPS
+
+            por ultimo rodar novamente com poetry run python manage.py runserver para ver se ainda está funcionando.
+
+M12 - Integrando Modelos e Serializers em Django Rest Framework
+
+    Aula 1 - Utilizando Django Serializers para tratar de modelos Django
+        o que é o Serializers:
+            O Serializers no Django Rest Framework (DRF) é uma ferramenta que facilita a conversão de dados complexos, 
+            como objetos de modelos Django, em formatos que podem ser facilmente renderizados em JSON, XML ou outros formatos. 
+            Ele também lida com a validação e desserialização de dados recebidos em solicitações HTTP, convertendo-os de volta para objetos Python.
+
+    Aula 2 - Como integrar Django Models e Django Serializers
+
+        Primeiro vamos criar 2 apps novos:
+            Order 
+            Product
+
+            poetry run python manage.py startapp order
+            poetry run python manage.py startapp product
+        
+        Vamos criar novos diretorios para organizar melhor o projeto:
+            Em order criamos a pasta models e um arquivo chamado order.py  e apagamos o models.py que vem na estrutura
+            Em product criamos a pasta models e um arquivo chamado product.py  e apagamos o models.py que vem na estrutura
+
+    Aula 3 - Criando Django Models para serem usado com Serializers
+
+        Incluimos os código para os models tanto para order quanto para product e incluimos em product o category tambem
+        alem disso ciramos um diretorio novo chamado serializer para cada app com os arquivo py já inclusos
+    
+    Aula 4 - Migrando Django Models
+
+        declarar/importar os modelos dentro de admin.py de cada app
+        from .models import Product, Category
+        from .models import Order
+
+        E exportar dentro dos __init__.py de cada app na pasta models
+
+        from .category import Category
+        from .product import Product
+        from .order import Order
+
+        Após isso declarar os apps dentro do bookstore project (settings.py)
+            Em INSTALLED_APPS incluir:
+                "order",
+                "product",
+        
+        Executamos o comando poetry run python manage.py makemigrations
+        Após executar o comando, devemos ver as migrações sendo criadas para os novos modelos.
+        Então executamos o poetry run python manage.py migrate
+
+        Caso ainda tenha o models.py nos apps apagar(já foi feito porem sempre verificar se realmente foi deletado)
+
+    Aula 5 - Criando Serializers em Django Rest Framework
+
+        Instalar dependencia:
+            poetry add django-rest-framework
+
+        Criamos os serializers para cada app e declaramos os models dentro de cada serializer.py
+        e por fim declaramos os serializers dentro dos __init__.py de cada app na pasta serializers
+
+        from .category_serializer import CategorySerializer
+        from .product_serializer import ProductSerializer
+        from .order_serializer import OrderSerializer
