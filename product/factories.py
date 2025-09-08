@@ -13,18 +13,18 @@ class CategoryFactory(factory.django.DjangoModelFactory):
         model = Category
         
 class ProductFactory(factory.django.DjangoModelFactory):
-    price = factory.Faker('pystr')
-    category = factory.LazyAttribute(CategoryFactory)
+    price = factory.Faker('pydecimal', left_digits=4, right_digits=2, positive=True)
+    categories = factory.LazyAttribute(CategoryFactory)
     title = factory.Faker('pystr')
-    
+
     @factory.post_generation
-    def category(self, create, extracted, **kwargs):
+    def categories(self, create, extracted, **kwargs):
         if not create:
             return
-        
+
         if extracted:
             for category in extracted:
-                self.category.add(category)
-    
+                self.categories.add(category)
+
     class Meta:
         model = Product

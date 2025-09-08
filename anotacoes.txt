@@ -103,3 +103,106 @@ M12 - Integrando Modelos e Serializers em Django Rest Framework
         from .category_serializer import CategorySerializer
         from .product_serializer import ProductSerializer
         from .order_serializer import OrderSerializer
+
+    Aula 6 - Criando Factories com Django factory
+
+        Factory é usado para criar dados de teste automaticamente
+
+        criamos arquivos factories.py para os dois app e construir nossos testes
+        Isso agiliza para gerar dados e testes sem ter que criar na mão
+    
+M13 - ViewsSets em Django Rest Framework
+
+    Aula 1 - Introdução ao ViewSets do Django Rest Framework
+
+        O ViewSet no Django Rest Framework (DRF) é uma abstração que combina a lógica de visualização (views) e a lógica de roteamento (URLs) em uma única classe. 
+        Ele simplifica a criação de APIs RESTful, permitindo que você defina operações CRUD (Create, Read, Update, Delete) para um conjunto de recursos de maneira mais concisa e organizada.
+        Com o ViewSet, você pode definir métodos para lidar com diferentes ações, como listar todos os itens, recuperar um item específico, criar um novo item, atualizar um item existente e excluir um item.
+        O DRF fornece vários tipos de ViewSets, como ModelViewSet, ReadOnlyModelViewSet e GenericViewSet, cada um com diferentes níveis de funcionalidade e personalização.
+
+    Aula 2 e 3 -ViewSets para alteração e recuperação de dados:
+
+        criamos um novo diretorio chamado viewsets em cada app e criamos os arquivos:
+            product_views.py
+            order_viewsets.py
+
+        importamos em cada __init__.py de cada app na pasta viewsets
+            from .product_views import ProductViewSet
+            from .order_viewsets import OrderViewSet
+
+        fazemos isso para organizar melhor o projeto
+
+        Os pré requisitos para criar um ViewSet são:
+            1 - Ter um modelo Django (Django Model) definido.
+            2 - Ter um serializer criado para o modelo.
+            3 - Importar os módulos necessários do Django Rest Framework.
+            4 - Definir a classe do ViewSet, herdando de uma classe base apropriada.
+            5 - Configurar a queryset e o serializer_class dentro do ViewSet.
+
+    Aula 4 - Rotas customizadas em Django Rest Framework
+
+        Criamos um novo arquivo chamado urls.py dentro de cada app e declaramos as rotas para cada app
+        e por fim declaramos as urls dentro do __init__.py de cada app na pasta urls
+
+        from .order_urls import urlpatterns
+        from .product_urls import urlpatterns
+
+        Por fim declaramos as urls dos apps dentro do bookstore project (urls.py)
+
+            path('', include('order.urls')),
+            path('', include('product.urls')),
+
+        Em bookstore project (urls.py) importamos o include e re-path
+
+            from django.urls import path, re_path, include 
+        
+        incluimos o versionamento nas urls dos apps
+
+            re_path('bookstore/(?P<version>(v1|v2))/', include('order.urls')),
+            re_path('bookstore/(?P<version>(v1|v2))/', include('product.urls')),
+
+    Aula 5 - ViewSets Genéricas em Django Rest Framework
+
+
+        Instalar dependencia == poetry add django_extensions
+        Incluir django_extensions em settings.py INSTALLED_APPS
+            "django_extensions",
+
+        Após isso rodar o comando para verificar se as urls estão funcionando
+            poetry run python manage.py show_urls
+
+        Consguimos verificar os endpoints criados
+            bookstore/<version>/orders/ [name='order-list']
+            bookstore/<version>/orders/{pk}/ [name='order-detail']
+            bookstore/<version>/products/ [name='product-list']
+            bookstore/<version>/products/{pk}/ [name='product-detail']
+    
+    Aula 6 - Serializers e ViewSets
+
+        Atualizamos os serializers para incluir os campos de relacionamento
+        incluindo id para categorias e produtos nos dois apps tanto no order quanto no product
+
+    Aula 7 - Teste do ViewSets com o pacote de testes do Django Ret Framework
+
+        Criamos um diretorio chamado tests em cada app e criamos os arquivos:
+            test_product_viewsets.py
+            test_order_viewsets.py
+            test_category_vieswsets.py (opcional)
+
+        importamos em cada __init__.py de cada app na pasta tests
+            from .test_product_viewsets import ProductViewSetTest
+            from .test_order_viewsets import OrderViewSetTest
+
+        fazemos isso para organizar melhor o projeto
+
+        Para rodar os testes usamos o comando:
+            poetry run pytest -v tests/test_viewsets
+            ou 
+            poetry run python manage.py test
+
+        Caso queira rodar um teste especifico use:
+            poetry run python manage.py test order.tests.test_order_viewsets.OrderViewSetTest
+
+        Ou se quiser rodar um método especifico use:
+            poetry run python manage.py test order.tests.test_order_viewsets.OrderViewSetTest.test_create_order
+
