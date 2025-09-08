@@ -1,6 +1,33 @@
 M11 - Configurando o Django Rest Framework
 
-    Aula 5 - Começanmdo o projeto
+    Aula 1 - Introdução ao Django Rest Framework
+        O Django Rest Framework (DRF) é uma biblioteca poderosa e flexível para construir APIs web em Django. 
+        Ele facilita a criação de APIs RESTful, fornecendo ferramentas e funcionalidades que simplificam o desenvolvimento, como serialização de dados, autenticação, permissões e visualizações baseadas em classes.
+        O DRF é amplamente utilizado na comunidade Django devido à sua facilidade de uso e integração perfeita com o framework Django.
+
+    Aula 2 - Porque utilizar o Restfull Api Framework e quais as opções disponíveis no mercado
+
+        O uso de um framework para construir APIs RESTful traz diversas vantagens, como padronização, segurança e agilidade no desenvolvimento. 
+        O Django Rest Framework (DRF) se destaca por sua integração com o Django, permitindo que desenvolvedores aproveitem suas funcionalidades e recursos já conhecidos.
+
+        Comparando Django Rest Framework com React e Vue.js, é importante notar que o DRF é focado na construção de APIs back-end, enquanto React e Vue.js são bibliotecas/frameworks para construção de interfaces de usuário (front-end). O DRF pode ser utilizado em conjunto com React ou Vue.js para criar aplicações web completas, onde o DRF lida com a lógica do servidor e a comunicação com o banco de dados, enquanto React ou Vue.js gerenciam a interação do usuário e a apresentação dos dados.
+
+        Além do DRF, existem outras opções no mercado, como Flask-RESTful, FastAPI e Express.js (para Node.js). 
+        Cada uma dessas ferramentas possui características específicas que podem ser mais adequadas dependendo do projeto e das necessidades da equipe de desenvolvimento.
+
+    Aula 3 - Instalando Django Rest Framework
+        https://www.django-rest-framework.org/#installation
+
+    Aula 4 - Configurando
+        Instalando poetry ( é tipo um node do django)
+            pip install poetry
+            https://python-poetry.org/docs/#installing-with-the-official-installer
+        
+        Instalando black - formatação de código
+            pip3 install black
+            https://github.com/psf/black
+
+    Aula 5 - Começando o projeto
 
         1 - Criamos um repositório do Git
         2 - fizemos a instalação do poetry
@@ -445,4 +472,204 @@ M15 - Autenticação em Django Rest Framework
                         class Meta:
                             model = Product
                             skip_postgeneration_save = True
+
+
+M16 - Instalando Docker
+
+    Aula 1 - Introdução ao Docker
+
+        - Docker é uma plataforma de software que permite criar, testar e implantar aplicativos rapidamente.
+        - O Docker empacota o software em unidades padronizadas chamadas contêineres, que têm tudo o que o software precisa para funcionar, incluindo bibliotecas, ferramentas do sistema, código e tempo de execução.
+        - Os contêineres do Docker são leves e portáteis, facilitando a movimentação entre diferentes ambientes.
+
+    Aula 2 - Instalando Dockerclae
+
+        https://docs.docker.com/desktop/windows/install
+
+    Aula 3 - Criando usuario no Docker Hub
+
+        https://hub.docker.com/signup
+    
+    Aula 4 - Rodando imagens com Docker run
+        https://docs.docker.com/engine/reference/commandline/run/
+        docker run hello-world
+
+        o docker run faz o download da imagem hello-world do Docker Hub e a executa em um contêiner.
+        A imagem hello-world é uma imagem de teste simples que verifica se o Docker está instalado e funcionando corretamente no seu sistema.
+        Quando você executa o comando, ele cria um contêiner a partir da imagem hello-world e exibe uma mensagem de boas-vindas no terminal, confirmando que o Docker está operando corretamente.
+        Se você vir a mensagem de boas-vindas, significa que o Docker foi instalado com sucesso e está funcionando corretamente no seu sistema.
+        docker --- IGNORE ---
+        docker run hello-world
+
+    Aula 5 - Explorando o comando Docker run
+
+        https://docs.docker.com/engine/reference/commandline/run/
+        O comando docker run é usado para criar e iniciar um contêiner a partir de uma imagem Docker. 
+        Ele permite que você execute aplicativos isolados em contêineres, fornecendo um ambiente consistente e portátil.
+        A sintaxe básica do comando é:
+            docker run [opções] <imagem> [comando] [argumentos]
+        Onde:
+            - [opções]: São opções adicionais que você pode usar para configurar o contêiner, como definir variáveis de ambiente, mapear portas, montar volumes, entre outros.
+            - <imagem>: É o nome da imagem Docker que você deseja usar para criar o contêiner. Pode ser uma imagem local ou uma imagem hospedada em um registro, como o Docker Hub.
+            - [comando]: (Opcional) É o comando que você deseja executar dentro do contêiner. Se não for especificado, o contêiner executará o comando padrão definido na imagem.
+            - [argumentos]: (Opcional) São argumentos adicionais que você pode passar para o comando executado dentro do contêiner.
+
+        Exemplo simples:
+            docker run hello-world
+        Este comando cria e inicia um contêiner a partir da imagem hello-world, que exibe uma mensagem de boas-vindas no terminal.
+
+        Exemplo com opções:
+            docker run -d -p 8080:80 nginx
+        Este comando cria e inicia um contêiner em segundo plano (-d) a partir da imagem nginx, mapeando a porta 80 do contêiner para a porta 8080 do host (-p 8080:80).
+
+        O comando docker run é uma ferramenta poderosa para executar aplicativos em contêineres, permitindo que você aproveite os benefícios da virtualização leve e da portabilidade oferecida pelo Docker.    ]
+    
+        docker run -it --rm -d -p 8080:80 --name web nginx : 
+        -d = roda em segundo plano
+        -it = interativo
+        --rm = remove o container quando parar
+        --name web = nome do container
+        -p 8080:80 = mapeia a porta 80 do container(docker) para a porta 8080 do host
+        nginx = imagem
+
+        docker ps -- lista os containers em execução
+        docker ps -a -- lista todos os containers
+        docker stop <nome ou id do container> -- para o container
+        docker start <nome ou id do container> -- inicia o container
+
+    Aula 6 - Construindo nossa primeira imagem Docker   
+
+        https://docs.docker.com/engine/reference/commandline/build/
+        O comando docker build é usado para criar uma imagem Docker a partir de um arquivo Dockerfile. 
+        Ele lê as instruções no Dockerfile e executa cada etapa para construir a imagem, que pode ser usada posteriormente para criar contêineres.
+        A sintaxe básica do comando é:
+            docker build [opções] <caminho>
+        Onde:
+            - [opções]: São opções adicionais que você pode usar para configurar o processo de construção da imagem, como definir tags, especificar arquivos de contexto, entre outros.
+            - <caminho>: É o caminho para o diretório que contém o arquivo Dockerfile. Pode ser um caminho relativo ou absoluto.
+
+        Exemplo simples:
+            docker build -t minha-imagem .
+        Este comando cria uma imagem Docker chamada "minha-imagem" a partir do Dockerfile localizado no diretório atual (indicado pelo ponto ".").
+
+        Exemplo com opções:
+            docker build -t minha-imagem:1.0 -f /caminho/para/Dockerfile /caminho/para/contexto
+        Este comando cria uma imagem Docker chamada "minha-imagem" com a tag "1.0", usando um Dockerfile localizado em um caminho específico (-f) e um contexto de construção diferente.
+
+        O comando docker build é essencial para criar imagens personalizadas que atendam às necessidades específicas do seu aplicativo, permitindo que você defina o ambiente, as dependências e as configurações necessárias para executar seu software em contêineres Docker.
+
+
+        Criamos um Arquivo Dockerfile ( tem extensão mesmo e é um arquivo de texto simples)
+            # syntax=docker/dockerfile:1
+            FROM busybox
+            CMD echo "hello world"
+        
+        Rodamos o Build para criar a imagem 
+            docker build -t lukasfrick/ebac-fullstack-python .
+
+        Vamos dar o run para ver se realmente funcionou
+           docker run lukasfrick/ebac-fullstack-python
+
+        Por ultimo  push
+            docker push lukasfrick/ebac-fullstack-python
+
+M17 - Como imagens funcionam em Docker
+
+    Aula 2 - Como funciona o Dockerfile?
+        https://docs.docker.com/reference/dockerfile/
+        o docker image é como se fosse uma caixa e onde estara todo o ambiente
+
+    
+    Aula 3 - criando o dockerfile
+
+        FROM python:3.8.1-slim as python-base       ----- INSTRUÇÃO MAIS IMPORTANTE
+
+            # python
+        ENV PYTHONUNBUFFERED=1 \
+            # prevents python creating .pyc files
+            PYTHONDONTWRITEBYTECODE=1 \
+            \
+            # pip
+            PIP_NO_CACHE_DIR=off \
+            PIP_DISABLE_PIP_VERSION_CHECK=on \
+            PIP_DEFAULT_TIMEOUT=100 \
+            \
+            # poetry
+            # https://python-poetry.org/docs/configuration/#using-environment-variables
+            POETRY_VERSION=1.0.3 \
+            # make poetry install to this location
+            POETRY_HOME="/opt/poetry" \
+            # make poetry create the virtual environment in the project's root
+            # it gets named `.venv`
+            POETRY_VIRTUALENVS_IN_PROJECT=true \
+            # do not ask any interactive question
+            POETRY_NO_INTERACTION=1 \
+            \
+            # paths
+            # this is where our requirements + virtual environment will live
+            PYSETUP_PATH="/opt/pysetup" \
+            VENV_PATH="/opt/pysetup/.venv"
+
+
+        # prepend poetry and venv to path
+        ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
+
+        RUN apt-get update \
+            && apt-get install --no-install-recommends -y \
+                # deps for installing poetry
+                curl \
+                # deps for building python deps
+                build-essential
+
+        # install poetry - respects $POETRY_VERSION & $POETRY_HOME
+        RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
+
+        # install postgres dependencies inside of Docker
+        RUN apt-get update \
+            && apt-get -y install libpq-dev gcc \
+            && pip install psycopg2
+
+        # copy project requirement files here to ensure they will be cached.
+        WORKDIR $PYSETUP_PATH
+        COPY poetry.lock pyproject.toml ./
+
+        # install runtime deps - uses $POETRY_VIRTUALENVS_IN_PROJECT internally
+        RUN poetry install --no-dev
+
+        # quicker install as runtime deps are already installed
+        RUN poetry install
+
+        WORKDIR /app
+
+        COPY . /app/
+
+        EXPOSE 8000
+
+        CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+    
+    Aula 4 - Rodando nosso projeto utilizando Dockerfile 
+
+        criamos un arquvio Dockerfile na raiz do projeto 
+
+        Apos isso vamos construir nossa imagem a partir do Dockerfile
+        
+        docker build -t bookstore:latest .
+
+        Vamos execur a imagem 
+        docker run --name bookstore -d -p 8000:8000 bookstore:latest
+
+        retornando a hash da imagem : 4cc6d8be2e76154f288faa783fa61930574e3ee8f0f2b9e15918d89ed4937d0b
+
+        poetry run python manage.py runserver
+
+    Aula 5 - Definindo diretórios com Docker volumes
+
+        - Compartilhamento de dados entre múltiplos containers
+        - Acesso ao sistema de arquivos do hospedeiro não é garantido e/ou mais custoso
+        - Armazenamento não é local, os dados estarão num host remoto ou ate mesmo na nuvem
+        - Quando é preciso fazer um backup, uma restauração ou migrar dados entre hospedeiros do Docker
+    
+
+
+
 
