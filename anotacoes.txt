@@ -1,33 +1,448 @@
-Aula 5 - Começanmdo o projeto
+M11 - Configurando o Django Rest Framework
 
-    1 - Criamos um repositório do Git
-    2 - fizemos a instalação do poetry
-        Aqui para poder usar globalmente tivemos que fazer uma configuração ao Path do windows   
-            Siga estes passos para adicionar o Poetry ao PATH do Windows:
-                1 - Copie este caminho: C:\Users\frick\AppData\Roaming\Python\Python313\Scripts
-                2 - Abra o menu Iniciar e pesquise por “variáveis de ambiente”.
-                3 - Clique em “Editar variáveis de ambiente do sistema”.
-                4 - Na janela que abrir, clique em “Variáveis de Ambiente…”.
-                5 - Em “Variáveis de usuário”, selecione a variável chamada Path e clique em “Editar…”.
-                6 - Clique em “Novo” e cole o caminho copiado.
-                7 - Feche e reabra o terminal do VS Code.
+    Aula 5 - Começanmdo o projeto
 
-        Caso não faça ainda é possivel utilizar o poetry com : python -m poetry --version
+        1 - Criamos um repositório do Git
+        2 - fizemos a instalação do poetry
+            Aqui para poder usar globalmente tivemos que fazer uma configuração ao Path do windows   
+                Siga estes passos para adicionar o Poetry ao PATH do Windows:
+                    1 - Copie este caminho: C:\Users\frick\AppData\Roaming\Python\Python313\Scripts
+                    2 - Abra o menu Iniciar e pesquise por “variáveis de ambiente”.
+                    3 - Clique em “Editar variáveis de ambiente do sistema”.
+                    4 - Na janela que abrir, clique em “Variáveis de Ambiente…”.
+                    5 - Em “Variáveis de usuário”, selecione a variável chamada Path e clique em “Editar…”.
+                    6 - Clique em “Novo” e cole o caminho copiado.
+                    7 - Feche e reabra o terminal do VS Code.
 
-    3 - iniciamos o poetry no terminal com : poetry init
-        e instalamos os pacotes pytest e factory-boy
+            Caso não faça ainda é possivel utilizar o poetry com : python -m poetry --version
 
-    4 - Adcionamos Django no poetry com : poetry add django
+        3 - iniciamos o poetry no terminal com : poetry init
+            e instalamos os pacotes pytest e factory-boy
 
-    5 - tive que criar uma pasta com o __init__.py
+        4 - Adcionamos Django no poetry com : poetry add django
 
-    6 - começar projeto com: poetry run django-admin.py startproject bookstore .
-        caso não vá verifique a versão poetry se necessário instale novamente
+        5 - tive que criar uma pasta com o __init__.py
 
-    7 - Criamos um projeto de api
-        poetry run django-admin.py startapp api
-        e apos isso o migrate
-        poetry run python manage.py migrate
+        6 - começar projeto com: poetry run django-admin.py startproject bookstore .
+            caso não vá verifique a versão poetry se necessário instale novamente
 
-    8 - Rodando o servidor
+        7 - Criamos um projeto de api
+            poetry run django-admin.py startapp api
+            e apos isso o migrate
+            poetry run python manage.py migrate
+
+        8 - Rodando o servidor
+            poetry run python manage.py runserver
+
+        9 - Instalando djangorestframework
+            poetry add djangorestframework
+
+            poetry update - para atualizar com novas dependencias o poetry.lock
+
+            em settings.py adcionar 'rest_framework' em INSTALLED_APPS
+
+            por ultimo rodar novamente com poetry run python manage.py runserver para ver se ainda está funcionando.
+
+M12 - Integrando Modelos e Serializers em Django Rest Framework
+
+    Aula 1 - Utilizando Django Serializers para tratar de modelos Django
+        o que é o Serializers:
+            O Serializers no Django Rest Framework (DRF) é uma ferramenta que facilita a conversão de dados complexos, 
+            como objetos de modelos Django, em formatos que podem ser facilmente renderizados em JSON, XML ou outros formatos. 
+            Ele também lida com a validação e desserialização de dados recebidos em solicitações HTTP, convertendo-os de volta para objetos Python.
+
+    Aula 2 - Como integrar Django Models e Django Serializers
+
+        Primeiro vamos criar 2 apps novos:
+            Order 
+            Product
+
+            poetry run python manage.py startapp order
+            poetry run python manage.py startapp product
+        
+        Vamos criar novos diretorios para organizar melhor o projeto:
+            Em order criamos a pasta models e um arquivo chamado order.py  e apagamos o models.py que vem na estrutura
+            Em product criamos a pasta models e um arquivo chamado product.py  e apagamos o models.py que vem na estrutura
+
+    Aula 3 - Criando Django Models para serem usado com Serializers
+
+        Incluimos os código para os models tanto para order quanto para product e incluimos em product o category tambem
+        alem disso ciramos um diretorio novo chamado serializer para cada app com os arquivo py já inclusos
+    
+    Aula 4 - Migrando Django Models
+
+        declarar/importar os modelos dentro de admin.py de cada app
+        from .models import Product, Category
+        from .models import Order
+
+        E exportar dentro dos __init__.py de cada app na pasta models
+
+        from .category import Category
+        from .product import Product
+        from .order import Order
+
+        Após isso declarar os apps dentro do bookstore project (settings.py)
+            Em INSTALLED_APPS incluir:
+                "order",
+                "product",
+        
+        Executamos o comando poetry run python manage.py makemigrations
+        Após executar o comando, devemos ver as migrações sendo criadas para os novos modelos.
+        Então executamos o poetry run python manage.py migrate
+
+        Caso ainda tenha o models.py nos apps apagar(já foi feito porem sempre verificar se realmente foi deletado)
+
+    Aula 5 - Criando Serializers em Django Rest Framework
+
+        Instalar dependencia:
+            poetry add django-rest-framework
+
+        Criamos os serializers para cada app e declaramos os models dentro de cada serializer.py
+        e por fim declaramos os serializers dentro dos __init__.py de cada app na pasta serializers
+
+        from .category_serializer import CategorySerializer
+        from .product_serializer import ProductSerializer
+        from .order_serializer import OrderSerializer
+
+    Aula 6 - Criando Factories com Django factory
+
+        Factory é usado para criar dados de teste automaticamente
+
+        criamos arquivos factories.py para os dois app e construir nossos testes
+        Isso agiliza para gerar dados e testes sem ter que criar na mão
+    
+M13 - ViewsSets em Django Rest Framework
+
+    Aula 1 - Introdução ao ViewSets do Django Rest Framework
+
+        O ViewSet no Django Rest Framework (DRF) é uma abstração que combina a lógica de visualização (views) e a lógica de roteamento (URLs) em uma única classe. 
+        Ele simplifica a criação de APIs RESTful, permitindo que você defina operações CRUD (Create, Read, Update, Delete) para um conjunto de recursos de maneira mais concisa e organizada.
+        Com o ViewSet, você pode definir métodos para lidar com diferentes ações, como listar todos os itens, recuperar um item específico, criar um novo item, atualizar um item existente e excluir um item.
+        O DRF fornece vários tipos de ViewSets, como ModelViewSet, ReadOnlyModelViewSet e GenericViewSet, cada um com diferentes níveis de funcionalidade e personalização.
+
+    Aula 2 e 3 -ViewSets para alteração e recuperação de dados:
+
+        criamos um novo diretorio chamado viewsets em cada app e criamos os arquivos:
+            product_views.py
+            order_viewsets.py
+
+        importamos em cada __init__.py de cada app na pasta viewsets
+            from .product_views import ProductViewSet
+            from .order_viewsets import OrderViewSet
+
+        fazemos isso para organizar melhor o projeto
+
+        Os pré requisitos para criar um ViewSet são:
+            1 - Ter um modelo Django (Django Model) definido.
+            2 - Ter um serializer criado para o modelo.
+            3 - Importar os módulos necessários do Django Rest Framework.
+            4 - Definir a classe do ViewSet, herdando de uma classe base apropriada.
+            5 - Configurar a queryset e o serializer_class dentro do ViewSet.
+
+    Aula 4 - Rotas customizadas em Django Rest Framework
+
+        Criamos um novo arquivo chamado urls.py dentro de cada app e declaramos as rotas para cada app
+        e por fim declaramos as urls dentro do __init__.py de cada app na pasta urls
+
+        from .order_urls import urlpatterns
+        from .product_urls import urlpatterns
+
+        Por fim declaramos as urls dos apps dentro do bookstore project (urls.py)
+
+            path('', include('order.urls')),
+            path('', include('product.urls')),
+
+        Em bookstore project (urls.py) importamos o include e re-path
+
+            from django.urls import path, re_path, include 
+        
+        incluimos o versionamento nas urls dos apps
+
+            re_path('bookstore/(?P<version>(v1|v2))/', include('order.urls')),
+            re_path('bookstore/(?P<version>(v1|v2))/', include('product.urls')),
+
+    Aula 5 - ViewSets Genéricas em Django Rest Framework
+
+
+        Instalar dependencia == poetry add django_extensions
+        Incluir django_extensions em settings.py INSTALLED_APPS
+            "django_extensions",
+
+        Após isso rodar o comando para verificar se as urls estão funcionando
+            poetry run python manage.py show_urls
+
+        Consguimos verificar os endpoints criados
+            bookstore/<version>/orders/ [name='order-list']
+            bookstore/<version>/orders/{pk}/ [name='order-detail']
+            bookstore/<version>/products/ [name='product-list']
+            bookstore/<version>/products/{pk}/ [name='product-detail']
+    
+    Aula 6 - Serializers e ViewSets
+
+        Atualizamos os serializers para incluir os campos de relacionamento
+        incluindo id para categorias e produtos nos dois apps tanto no order quanto no product
+
+    Aula 7 - Teste do ViewSets com o pacote de testes do Django Ret Framework
+
+        Criamos um diretorio chamado tests em cada app e criamos os arquivos:
+            test_product_viewsets.py
+            test_order_viewsets.py
+            test_category_vieswsets.py (opcional)
+
+        importamos em cada __init__.py de cada app na pasta tests
+            from .test_product_viewsets import ProductViewSetTest
+            from .test_order_viewsets import OrderViewSetTest
+
+        fazemos isso para organizar melhor o projeto
+
+        Para rodar os testes usamos o comando:
+            poetry run pytest -v tests/test_viewsets
+            ou 
+            poetry run python manage.py test
+
+        Caso queira rodar um teste especifico use:
+            poetry run python manage.py test order.tests.test_order_viewsets.OrderViewSetTest
+
+        Ou se quiser rodar um método especifico use:
+            poetry run python manage.py test order.tests.test_order_viewsets.OrderViewSetTest.test_create_order
+        
+M14 - Paginação Django Rest Framework
+
+    Aula 1 - Porque utilziar paginação?
+        A paginação é uma técnica usada para dividir grandes conjuntos de dados em partes menores e mais gerenciáveis, chamadas de páginas. 
+        Isso é especialmente útil em aplicações web e APIs, onde a quantidade de dados pode ser muito grande para ser carregada ou exibida de uma só vez.
+        A paginação melhora a performance, reduz o tempo de carregamento, economiza largura de banda, melhora a experiência do usuário e facilita a navegação pelos dados.
+        Em resumo, a paginação é uma prática essencial para lidar com grandes volumes de dados de maneira eficiente e amigável ao usuário.
+
+
+    Aula 2 - Introdução a paginação em Django Rest Framework
+
+        O Django Rest Framework (DRF) oferece suporte integrado para paginação, permitindo que você divida grandes conjuntos de dados em páginas menores e mais gerenciáveis. 
+        Isso é especialmente útil ao lidar com APIs que retornam listas de recursos, onde a quantidade de dados pode ser muito grande para ser carregada ou exibida de uma só vez.
+        O DRF fornece várias classes de paginação pré-definidas, como PageNumberPagination, LimitOffsetPagination e CursorPagination, cada uma com diferentes estratégias de paginação.
+        Você pode configurar a paginação globalmente no arquivo settings.py ou personalizar a paginação para visualizações específicas, definindo a classe de paginação desejada.
+
+        Incluir em settings.py
+            REST_FRAMEWORK = {
+                'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+                'PAGE_SIZE': 100,  # Número de itens por página
+            }   
+        
+        Rodamos o servidor e testamos os endpoints para ver se a paginação está funcionando corretamente.
         poetry run python manage.py runserver
+
+        A paginação deve estar funcionando corretamente, retornando um número limitado de itens por página, conforme configurado.
+        Conseguimos incluir dados para verificar a funcionalidade dos itens
+
+    Aula 3 - Adicionando dados para paginar
+
+        poetry run python manage.py shell_plus
+        from product.factories import ProductFactory
+        for _ in range(50):    //////////// para criar x produtos
+            ProductFactory()
+
+        Ao atualizar o endpoint de produtos, você deve ver que os resultados estão paginados, mostrando apenas o número de itens por página que você configurou (neste caso, 50).
+
+    Aula 4 - Adicionando Django Toolbar para comparar a paginação
+
+        Instalar dependencia == poetry add django-debug-toolbar
+        Incluir django_debug_toolbar em settings.py INSTALLED_APPS
+            "debug_toolbar",
+
+        Incluir em settings.py
+            MIDDLEWARE = [
+                ...
+                "debug_toolbar.middleware.DebugToolbarMiddleware",
+                ...
+            ]
+
+            INTERNAL_IPS = [
+                "127.0.0.1",
+            ]   
+
+        Incluir em bookstore project (urls.py)
+            import debug_toolbar
+            urlpatterns = [
+                ...
+                path('__debug__/', include(debug_toolbar.urls)),
+            ]   
+        Rodamos o servidor e testamos os endpoints para ver se a paginação está funcionando corretamente.
+    
+        poetry run python manage.py runserver
+        A paginação deve estar funcionando corretamente, retornando um número limitado de itens por página, conforme configurado.
+        Conseguimos incluir dados para verificar a funcionalidade dos itens
+
+    Aula 5 - Configurando Paginação
+
+        Adicionar paginação no settings.py
+        REST_FRAMEWORK = {
+            'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+            'PAGE_SIZE': 10,  # Número de itens por página
+        }
+
+M15 - Autenticação em Django Rest Framework
+
+    Aula 1 - Introdução a autenticação em Django Rest Framework
+
+        A autenticação no Django Rest Framework (DRF) é o processo de verificar a identidade dos usuários que tentam acessar recursos protegidos em uma API. 
+        O DRF oferece várias opções de autenticação, permitindo que você escolha o método mais adequado para sua aplicação.
+        Alguns dos métodos de autenticação mais comuns no DRF incluem:
+            1 - Autenticação por Token (TokenAuthentication): Cada usuário recebe um token exclusivo que deve ser incluído nas solicitações para acessar recursos protegidos.
+            2 - Autenticação por Sessão (SessionAuthentication): Utiliza sessões do Django para autenticar usuários, semelhante ao sistema de autenticação padrão do Django.
+            3 - Autenticação Básica (BasicAuthentication): Envia credenciais (nome de usuário e senha) em cada solicitação HTTP, codificadas em Base64.
+            4 - Autenticação OAuth: Permite a autenticação usando tokens OAuth, que são frequentemente usados para autorizar acesso a APIs de terceiros.
+
+        A escolha do método de autenticação depende dos requisitos de segurança e da arquitetura da sua aplicação.
+    
+    Aula 3 - configurando Django Rest Framework para autenticação
+
+        Incluir em settings.py
+            REST_FRAMEWORK = {
+                ...
+                'DEFAULT_AUTHENTICATION_CLASSES': [
+                    'rest_framework.authentication.BasicAuthentication',
+                    'rest_framework.authentication.SessionAuthentication',
+                ],
+                ...
+            }
+        Com essa configuração, o Django Rest Framework (DRF) usará autenticação básica e autenticação por sessão para proteger os endpoints da API.
+
+    Aula 4 - ViewSets protegidos com autenticação
+
+        Para proteger um ViewSet com autenticação no Django Rest Framework (DRF), você pode usar a classe de permissão IsAuthenticated. 
+        Isso garante que apenas usuários autenticados possam acessar os endpoints do ViewSet.
+        
+        No arquivo viewsets.py do app order, por exemplo, você pode adicionar a configuração de permissão da seguinte maneira:
+
+            from rest_framework.permissions import IsAuthenticated
+            from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+
+            class OrderViewSet(viewsets.ModelViewSet):
+                queryset = Order.objects.all()
+                serializer_class = OrderSerializer
+                permission_classes = [IsAuthenticated]  # Adiciona a permissão de autenticação
+                authentication_classes = [SessionAuthentication, BasicAuthentication]
+
+        Com essa configuração, qualquer tentativa de acessar os endpoints do OrderViewSet sem estar autenticado resultará em uma resposta 401 Unauthorized.
+
+    Aula 5 - Basic authentication
+
+        A autenticação básica (Basic Authentication) é um método simples de autenticação HTTP que envolve o envio de credenciais (nome de usuário e senha) em cada solicitação HTTP. 
+        Essas credenciais são codificadas em Base64 e incluídas no cabeçalho Authorization da solicitação.
+        Embora a autenticação básica seja fácil de implementar, ela não é a mais segura, pois as credenciais são enviadas em texto simples (após a decodificação do Base64). 
+        Portanto, é altamente recomendável usar HTTPS para proteger as comunicações entre o cliente e o servidor ao usar autenticação básica.
+        No Django Rest Framework (DRF), você pode habilitar a autenticação básica adicionando 'rest_framework.authentication.BasicAuthentication' à configuração DEFAULT_AUTHENTICATION_CLASSES no arquivo settings.py.
+
+        criar um super usuario para testar a autenticação
+            poetry run python manage.py createsuperuser --username username --email user@example.com
+
+        
+        Rodamos o servidor e testamos os endpoints para ver se a autenticação está funcionando corretamente.
+            poetry run python manage.py runserver
+
+    Aula 6 - Token Authentication
+
+        A autenticação por token (Token Authentication) é um método de autenticação onde cada usuário recebe um token exclusivo que deve ser incluído nas solicitações para acessar recursos protegidos. 
+        Esse token é geralmente gerado após o usuário fazer login com suas credenciais (nome de usuário e senha) e é usado para autenticar solicitações subsequentes sem a necessidade de enviar as credenciais novamente.
+        No Django Rest Framework (DRF), você pode implementar a autenticação por token usando o módulo rest_framework.authtoken. 
+        Isso envolve adicionar o TokenAuthentication à configuração DEFAULT_AUTHENTICATION_CLASSES no arquivo settings.py, criar tokens para os usuários e configurar as visualizações para aceitar tokens nas solicitações.
+
+        Instalar dependencia == poetry add djangorestframework-authtoken
+        Incluir rest_framework.authtoken em settings.py INSTALLED_APPS
+            "rest_framework.authtoken",
+
+        Incluir em settings.py
+            REST_FRAMEWORK = {
+                ...
+                'DEFAULT_AUTHENTICATION_CLASSES': [
+                    'rest_framework.authentication.TokenAuthentication',
+                    'rest_framework.authentication.BasicAuthentication',
+                    'rest_framework.authentication.SessionAuthentication',
+                ],
+                ...
+            }
+        
+        Incluimos dentro de urls no bookstore project (urls.py)
+            from rest_framework.authtoken.views import obtain_auth_token
+
+            urlpatterns = [
+                ...
+                path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
+                ...
+            ]
+
+            isso faz com que o endpoint api-token-auth/ esteja disponível para obter tokens de autenticação.
+            e toda vez que um usuário fizer uma solicitação POST para esse endpoint com suas credenciais (nome de usuário e senha), ele receberá um token de autenticação em resposta.
+
+        Incluimos os imports de TokenAuthentication em cada viewset
+            from rest_framework.authentication import TokenAuthentication
+        
+        Rodamos o comando para criar a tabela de tokens
+            poetry run python manage.py migrate
+
+        Criar tokens para os usuários
+            poetry run python manage.py drf_create_token <username>
+
+        Rodamos o servidor e testamos os endpoints para ver se a autenticação por token está funcionando corretamente.
+            poetry run python manage.py runserver
+
+        No postman em Header incluimos em Key Authorization e no Value colocamos Token <o token gerado>  anteriormente
+
+    
+    Aula 7 - Teste de segurança em Django Rest Framework
+
+        1- Protegendo os testes com autenticação
+            Atualizamos os testes para incluir autenticação, garantindo que apenas usuários autenticados possam acessar os endpoints protegidos.
+
+            Primeiro ajustamos os testes conforme a paginação incluindo o restults e o count
+            EX:
+                self.assertEqual(product_data['results'][0]['title'], self.product.title)
+                self.assertEqual(len(product_data['results']), 1)  # Verifica se há apenas 1 produto na página
+            
+            Incluimos em cada teste dos viewsets a autenticação
+
+                from rest_framework.authtoken.models import Token
+                from order.factories import UserFactory
+                
+                self.user = UserFactory()
+                self.client.force_authenticate(user=self.user)
+
+                Caso não tenha o self.user = UserFactory() criar o user factory
+                
+                Rodamos os testes para verificar se tudo está funcionando corretamente.
+                    poetry run pytest -v tests/test_viewsets
+                    ou 
+                    poetry run python manage.py tests/
+                    ou
+                    poetry run python tests/
+            
+
+        2 - resolvendo os Warnings
+            Atualizamos os testes para resolver os warnings relacionados à paginação e autenticação.
+                1 - Adicionamos a paginação nos testes conforme o item 1
+                2 - Adicionamos a autenticação nos testes conforme o item 1
+            Rodamos os testes novamente para garantir que os warnings foram resolvidos.
+                poetry run pytest -v tests/test_viewsets
+                ou 
+                poetry run python manage.py tests/
+                ou
+                poetry run python tests/
+
+            foi incluido o .order_by('id') em cada queryset dos viewsets para resolver o warning de ordenação
+                EX:
+                    class ProductViewSet(ModelViewSet):
+                        authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
+                        permission_classes = [IsAuthenticated]
+                    
+                        queryset = Product.objects.all().order_by('id')
+                        serializer_class = ProductSerializer
+            
+            E nas factories foi incluido o Meta com skip_postgeneration_save = True para resolver o warning de DeprecationWarning
+                EX:
+                    class ProductFactory(DjangoModelFactory):
+                        .....
+                    
+                        class Meta:
+                            model = Product
+                            skip_postgeneration_save = True
+
