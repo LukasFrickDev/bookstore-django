@@ -279,3 +279,170 @@ M14 - Paginação Django Rest Framework
             'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
             'PAGE_SIZE': 10,  # Número de itens por página
         }
+
+M15 - Autenticação em Django Rest Framework
+
+    Aula 1 - Introdução a autenticação em Django Rest Framework
+
+        A autenticação no Django Rest Framework (DRF) é o processo de verificar a identidade dos usuários que tentam acessar recursos protegidos em uma API. 
+        O DRF oferece várias opções de autenticação, permitindo que você escolha o método mais adequado para sua aplicação.
+        Alguns dos métodos de autenticação mais comuns no DRF incluem:
+            1 - Autenticação por Token (TokenAuthentication): Cada usuário recebe um token exclusivo que deve ser incluído nas solicitações para acessar recursos protegidos.
+            2 - Autenticação por Sessão (SessionAuthentication): Utiliza sessões do Django para autenticar usuários, semelhante ao sistema de autenticação padrão do Django.
+            3 - Autenticação Básica (BasicAuthentication): Envia credenciais (nome de usuário e senha) em cada solicitação HTTP, codificadas em Base64.
+            4 - Autenticação OAuth: Permite a autenticação usando tokens OAuth, que são frequentemente usados para autorizar acesso a APIs de terceiros.
+
+        A escolha do método de autenticação depende dos requisitos de segurança e da arquitetura da sua aplicação.
+    
+    Aula 3 - configurando Django Rest Framework para autenticação
+
+        Incluir em settings.py
+            REST_FRAMEWORK = {
+                ...
+                'DEFAULT_AUTHENTICATION_CLASSES': [
+                    'rest_framework.authentication.BasicAuthentication',
+                    'rest_framework.authentication.SessionAuthentication',
+                ],
+                ...
+            }
+        Com essa configuração, o Django Rest Framework (DRF) usará autenticação básica e autenticação por sessão para proteger os endpoints da API.
+
+    Aula 4 - ViewSets protegidos com autenticação
+
+        Para proteger um ViewSet com autenticação no Django Rest Framework (DRF), você pode usar a classe de permissão IsAuthenticated. 
+        Isso garante que apenas usuários autenticados possam acessar os endpoints do ViewSet.
+        
+        No arquivo viewsets.py do app order, por exemplo, você pode adicionar a configuração de permissão da seguinte maneira:
+
+            from rest_framework.permissions import IsAuthenticated
+            from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+
+            class OrderViewSet(viewsets.ModelViewSet):
+                queryset = Order.objects.all()
+                serializer_class = OrderSerializer
+                permission_classes = [IsAuthenticated]  # Adiciona a permissão de autenticação
+                authentication_classes = [SessionAuthentication, BasicAuthentication]
+
+        Com essa configuração, qualquer tentativa de acessar os endpoints do OrderViewSet sem estar autenticado resultará em uma resposta 401 Unauthorized.
+
+    Aula 5 - Basic authentication
+
+        A autenticação básica (Basic Authentication) é um método simples de autenticação HTTP que envolve o envio de credenciais (nome de usuário e senha) em cada solicitação HTTP. 
+        Essas credenciais são codificadas em Base64 e incluídas no cabeçalho Authorization da solicitação.
+        Embora a autenticação básica seja fácil de implementar, ela não é a mais segura, pois as credenciais são enviadas em texto simples (após a decodificação do Base64). 
+        Portanto, é altamente recomendável usar HTTPS para proteger as comunicações entre o cliente e o servidor ao usar autenticação básica.
+        No Django Rest Framework (DRF), você pode habilitar a autenticação básica adicionando 'rest_framework.authentication.BasicAuthentication' à configuração DEFAULT_AUTHENTICATION_CLASSES no arquivo settings.py.
+
+        criar um super usuario para testar a autenticação
+            poetry run python manage.py createsuperuser --username username --email user@example.com
+
+        
+        Rodamos o servidor e testamos os endpoints para ver se a autenticação está funcionando corretamente.
+            poetry run python manage.py runserver
+
+    Aula 6 - Token Authentication
+
+        A autenticação por token (Token Authentication) é um método de autenticação onde cada usuário recebe um token exclusivo que deve ser incluído nas solicitações para acessar recursos protegidos. 
+        Esse token é geralmente gerado após o usuário fazer login com suas credenciais (nome de usuário e senha) e é usado para autenticar solicitações subsequentes sem a necessidade de enviar as credenciais novamente.
+        No Django Rest Framework (DRF), você pode implementar a autenticação por token usando o módulo rest_framework.authtoken. 
+        Isso envolve adicionar o TokenAuthentication à configuração DEFAULT_AUTHENTICATION_CLASSES no arquivo settings.py, criar tokens para os usuários e configurar as visualizações para aceitar tokens nas solicitações.
+
+        Instalar dependencia == poetry add djangorestframework-authtoken
+        Incluir rest_framework.authtoken em settings.py INSTALLED_APPS
+            "rest_framework.authtoken",
+
+        Incluir em settings.py
+            REST_FRAMEWORK = {
+                ...
+                'DEFAULT_AUTHENTICATION_CLASSES': [
+                    'rest_framework.authentication.TokenAuthentication',
+                    'rest_framework.authentication.BasicAuthentication',
+                    'rest_framework.authentication.SessionAuthentication',
+                ],
+                ...
+            }
+        
+        Incluimos dentro de urls no bookstore project (urls.py)
+            from rest_framework.authtoken.views import obtain_auth_token
+
+            urlpatterns = [
+                ...
+                path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
+                ...
+            ]
+
+            isso faz com que o endpoint api-token-auth/ esteja disponível para obter tokens de autenticação.
+            e toda vez que um usuário fizer uma solicitação POST para esse endpoint com suas credenciais (nome de usuário e senha), ele receberá um token de autenticação em resposta.
+
+        Incluimos os imports de TokenAuthentication em cada viewset
+            from rest_framework.authentication import TokenAuthentication
+        
+        Rodamos o comando para criar a tabela de tokens
+            poetry run python manage.py migrate
+
+        Criar tokens para os usuários
+            poetry run python manage.py drf_create_token <username>
+
+        Rodamos o servidor e testamos os endpoints para ver se a autenticação por token está funcionando corretamente.
+            poetry run python manage.py runserver
+
+        No postman em Header incluimos em Key Authorization e no Value colocamos Token <o token gerado>  anteriormente
+
+    
+    Aula 7 - Teste de segurança em Django Rest Framework
+
+        1- Protegendo os testes com autenticação
+            Atualizamos os testes para incluir autenticação, garantindo que apenas usuários autenticados possam acessar os endpoints protegidos.
+
+            Primeiro ajustamos os testes conforme a paginação incluindo o restults e o count
+            EX:
+                self.assertEqual(product_data['results'][0]['title'], self.product.title)
+                self.assertEqual(len(product_data['results']), 1)  # Verifica se há apenas 1 produto na página
+            
+            Incluimos em cada teste dos viewsets a autenticação
+
+                from rest_framework.authtoken.models import Token
+                from order.factories import UserFactory
+                
+                self.user = UserFactory()
+                self.client.force_authenticate(user=self.user)
+
+                Caso não tenha o self.user = UserFactory() criar o user factory
+                
+                Rodamos os testes para verificar se tudo está funcionando corretamente.
+                    poetry run pytest -v tests/test_viewsets
+                    ou 
+                    poetry run python manage.py tests/
+                    ou
+                    poetry run python tests/
+            
+
+        2 - resolvendo os Warnings
+            Atualizamos os testes para resolver os warnings relacionados à paginação e autenticação.
+                1 - Adicionamos a paginação nos testes conforme o item 1
+                2 - Adicionamos a autenticação nos testes conforme o item 1
+            Rodamos os testes novamente para garantir que os warnings foram resolvidos.
+                poetry run pytest -v tests/test_viewsets
+                ou 
+                poetry run python manage.py tests/
+                ou
+                poetry run python tests/
+
+            foi incluido o .order_by('id') em cada queryset dos viewsets para resolver o warning de ordenação
+                EX:
+                    class ProductViewSet(ModelViewSet):
+                        authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
+                        permission_classes = [IsAuthenticated]
+                    
+                        queryset = Product.objects.all().order_by('id')
+                        serializer_class = ProductSerializer
+            
+            E nas factories foi incluido o Meta com skip_postgeneration_save = True para resolver o warning de DeprecationWarning
+                EX:
+                    class ProductFactory(DjangoModelFactory):
+                        .....
+                    
+                        class Meta:
+                            model = Product
+                            skip_postgeneration_save = True
+
