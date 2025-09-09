@@ -668,8 +668,161 @@ M17 - Como imagens funcionam em Docker
         - Acesso ao sistema de arquivos do hospedeiro não é garantido e/ou mais custoso
         - Armazenamento não é local, os dados estarão num host remoto ou ate mesmo na nuvem
         - Quando é preciso fazer um backup, uma restauração ou migrar dados entre hospedeiros do Docker
+
+M18 - Containers em Docker
+
+    Aula 1 - Introdução a Docker Container:
+
+        Essa é a parte da execução
+
+        Ele isola o aplicativo do sistema operacional.
+        Funciona sempre da mesma forma, não importa onde você o execute (Windows, Linux, servidor, etc.).
+        É mais leve que uma máquina virtual e inicia rapidamente.
+
+        Um Docker Container é como uma caixinha leve e portátil que contém tudo o que um aplicativo precisa para funcionar: código, bibliotecas, dependências e configurações.
     
+    Aula 2 - Automatizando ambientes com Docker Container
 
+        O Docker seria uma "imagem" que é como se fosse um zip com tudo que aquele arquvio tem como uma base congelada
+        O Container é como se fosse a execução dessa "imagem"
 
+        Docker Compose:
+            É uma ferramente que automatiza o workflow/execução da aplicação
+    
+    Aula 3 - Introdução a Docker Compose
 
+        Em settings.py incluido mais dados no DATABASES no profile default e import os
+            import os
 
+            ....            
+            
+            DATABASES = {
+                "default": {
+                    "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
+                    "NAME": os.environ.get("SQL_DATABASE", BASE_DIR / "db.sqlite3"),
+                    "USER": os.environ.get("SQL_USER", "user"),
+                    "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
+                    "HOST": os.environ.get("SQL_HOST", "localhost"),
+                    "PORT": os.environ.get("SQL_PORT", "5432"),
+                }
+            }
+
+            ....
+            
+            Incluimos informações de portas para permitir que o django entenda que a aplicação esta sendo rodada dentro do container
+
+            SECRET_KEY = os.environ.get("SECRET_KEY")
+
+            DEBUG = int(os.environ.get("DEBUG", default=0))
+
+            # 'DJANGO_ALLOWED_HOSTS' should be a single string of hosts with a space between each.
+            # For example: 'DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
+            ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+
+    Aula 4 - Comandos em Docker Compose
+
+        criamos um arquivo na raiz chamdo env.db 
+        Esses são os valores definidos para inserir nas informações do db
+        Essas informações estamos preenchendo em DATABASES em setting.py que incluimos na ulitma Aula
+
+        instalar a biblioteca para conectar o projeto escrito em python para o postgres:
+            poetry add psycopg2-binary 
+    
+    Aula 5 - Criando um docker Compose
+
+        Incluimos '&& pip install psycopg2' do Dockerfile
+
+        Criamos o arquivo docker-compose.yml com os seguintes dados:
+
+            version: '3.9'
+
+            services:
+            web: 
+                build: . 
+                command: sh -c "sleep 10 && python manage.py runserver 0.0.0.0:8000"    ////// sh -c "sleep 10 && ....." isso serve para dar um delay no db e funcionar melhor
+                volumes:
+                - .:/usr/src/app/
+                ports:
+                - 8000:8000
+                env_file:
+                - ./env.dev
+                depends_on:
+                - db
+            
+            db:
+                image: postgres:13.0-alpine
+                volumes:
+                - postgres_data:/var/lib/postgresql/data/
+                environment:
+                - POSTGRES_USER=dev
+                - POSTGRES_PASSWORD=dev
+                - POSTGRES_DB=bookstore_db
+
+            volumes:
+            postgres_data:
+        
+        Após essa configuração vamos fazer a build da imagem
+         docker compose up -d --build
+
+        docker ps para verificar se os containers estão rodando
+    
+        docker-compose up para rodar os containers
+
+        docker-compose logs <log da imagem> para ver os logs dos containers e rodar a aplicação
+
+        docker-compose exec web python manage.py migrate --noinput ---- para rodar as migrations
+
+        comandos extras:
+        docker-compose down para parar os containers
+        docker-compose down -v para parar os containers e remover os volumes
+
+    Aula 6 - Como analiser log e como o Docker compose funciona internamente
+
+        1 - Comando para acessar o container
+
+            docker exec -it 7e485caa5d2d /bin/bash
+
+                7e485caa5d2d = id do container que queremos acessar
+
+                7e485caa5d2d é o ID do contêiner que você deseja acessar. Você pode obter esse ID executando o comando docker ps, que lista todos os contêineres em execução junto com seus IDs.
+            
+            # Agora estamos dentro do container e podemos executar comandos diretamente nele
+            # Por exemplo, podemos rodar as migrations do Django aqui
+                python manage.py migrate --noinput
+
+        2 - Criando arquvio Makefile e instalando o make
+            Instalar dependencia == poetry add make
+            Criar o arquivo Makefile na raiz do projeto
+
+            winget install --id ezwinports.make
+            poetry add --dev flake8 black mypy
+
+            make
+            make check
+            make format-py
+
+            .PHONY: help run stop logs migrate createsuperuser test shell
+
+            help: ## Mostra essa ajuda
+                @grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+            run: ## Sobe os containers
+                docker compose up -d --build
+
+            stop: ## Para os containers
+                docker compose down -v
+
+            logs: ## Mostra os logs dos containers
+                docker compose logs -f
+
+            migrate: ## Roda as migrations
+                docker compose exec web python manage.py migrate --noinput
+
+            createsuperuser: ## Cria um super usuário
+                docker compose exec web python manage.py createsuperuser
+
+            test: ## Roda os testes
+                docker compose exec web pytest -v
+
+            shell: ## Acessa o shell do container web
+                docker compose exec web /bin/bash
