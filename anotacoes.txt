@@ -1004,3 +1004,23 @@ M20 - Continuous Integration / Entrega Continua
 
         Seguindo a documentação do github actions fizemos um push e o workflow rodou automaticamente
 
+    
+    Aual 5 - Preparando o projeto para integrar com GitHub Actions
+
+        docker-compose up -d --build
+        docker-compose exec web python manage.py migrate --noinput
+        docker-compose exec web python manage.py test 
+
+    Aula 6 - Automatizando build com o GitHub Actions
+
+        Inclui ports no docker-compose.yml em db
+            ports:
+              - 5432:5432
+        em volumes inclimos app_data
+            volumes:
+              - app_data:/usr/src/app/
+              - postgres_data:/var/lib/postgresql/data/
+
+
+        
+
