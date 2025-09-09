@@ -943,3 +943,64 @@ M19 - Docker Network
         Apos isso rodamos o projeot docker compose up -d --build
         verificamos a rede com docker network ls
         E podemos dar uns inspect com id do container para verificar tudo que foi criado
+
+M20 - Continuous Integration / Entrega Continua
+
+    Aula 1 - Introdução a Entrega Continua  
+        A Entrega Contínua (Continuous Delivery) é uma prática de desenvolvimento de software que visa automatizar e acelerar o processo de entrega de software, garantindo que o código esteja sempre em um estado pronto para ser implantado em produção.
+        O objetivo principal da Entrega Contínua é permitir que as equipes de desenvolvimento possam lançar novas funcionalidades, correções de bugs e melhorias de forma rápida, segura e frequente, reduzindo o tempo entre a escrita do código e sua disponibilização para os usuários finais.
+        A Entrega Contínua envolve a automação de várias etapas do ciclo de vida do desenvolvimento de software, incluindo integração contínua (CI), testes automatizados, construção (build) do software, implantação (deployment) e monitoramento.
+        Com a Entrega Contínua, as equipes podem detectar e corrigir problemas mais rapidamente, melhorar a qualidade do software e responder às necessidades dos clientes de forma mais ágil.
+        Essa prática é frequentemente associada a metodologias ágeis e DevOps, promovendo uma cultura de colaboração entre desenvolvedores, operações e outras partes interessadas no processo de entrega de software.
+
+    Aula 2 - Principais ferramentas de CI/CD
+
+        Existem várias ferramentas populares de CI/CD (Integração Contínua/Entrega Contínua) disponíveis no mercado, cada uma com suas próprias características e funcionalidades. Aqui estão algumas das principais ferramentas de CI/CD:
+
+            Jenkins: Uma das ferramentas de CI/CD mais populares e amplamente utilizadas. É uma plataforma de automação de código aberto que permite a criação de pipelines de integração e entrega contínua personalizadas.
+
+            GitLab CI/CD: Integrado ao GitLab, essa ferramenta oferece recursos completos de CI/CD, incluindo pipelines, testes automatizados, implantação e monitoramento. É uma solução tudo-em-um para desenvolvimento e entrega de software.
+
+            Travis CI: Uma plataforma de CI/CD baseada em nuvem que se integra facilmente com repositórios GitHub. Oferece suporte a várias linguagens de programação e permite a execução de testes automatizados e implantações.
+
+            CircleCI: Outra plataforma de CI/CD baseada em nuvem que oferece integração com repositórios GitHub e Bitbucket. Possui uma interface intuitiva e recursos avançados para criação de pipelines personalizados.
+
+            Azure DevOps: Uma solução completa da Microsoft que inclui ferramentas para gerenciamento de código-fonte, planejamento ágil, integração contínua, entrega contínua e monitoramento. Suporta várias linguagens e plataformas.
+
+            Bamboo: Desenvolvido pela Atlassian, o Bamboo é uma ferramenta de CI/CD que se integra bem com outras ferramentas da Atlassian, como Jira e Bitbucket. Oferece recursos avançados para criação de pipelines e automação de testes.
+
+            TeamCity: Uma ferramenta de CI/CD desenvolvida pela JetBrains, conhecida por sua facilidade de uso e integração com várias linguagens e plataformas. Oferece recursos avançados para criação de pipelines personalizados.
+
+            GitHub Actions: Integrado ao GitHub, o GitHub Actions permite a criação de fluxos de trabalho automatizados para CI/CD diretamente nos repositórios do GitHub. Suporta uma ampla variedade de eventos e ações personalizadas.
+
+        Essas são apenas algumas das principais ferramentas de CI/CD disponíveis no mercado. 
+        A escolha da ferramenta certa depende das necessidades específicas do projeto, da equipe e do ambiente de desenvolvimento.
+
+        Além disso, é importante considerar fatores como a facilidade de uso, a integração com outras ferramentas e serviços, o suporte a diferentes linguagens de programação e a escalabilidade da solução ao escolher uma ferramenta de CI/CD.
+
+    Aula 3 e 4 - Introdução e Configurando CI/CD com GitHub Actions
+        https://docs.github.com/pt/actions/get-started/quickstart
+
+        Criamos o arquivo .github/workflows/github-actions-demo.yml com o seguinte conteúdo:
+
+            name: GitHub Actions Demo
+            run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+            on: [push]
+            jobs:
+            Explore-GitHub-Actions:
+                runs-on: ubuntu-latest
+                steps:
+                - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+                - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+                - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+                - name: Check out repository code
+                    uses: actions/checkout@v4
+                - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+                - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+                - name: List files in the repository
+                    run: |
+                    ls ${{ github.workspace }}
+                - run: echo "🍏 This job's status is ${{ job.status }}."
+
+        Seguindo a documentação do github actions fizemos um push e o workflow rodou automaticamente
+
