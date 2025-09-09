@@ -826,3 +826,120 @@ M18 - Containers em Docker
 
             shell: ## Acessa o shell do container web
                 docker compose exec web /bin/bash
+
+M19 - Docker Network
+
+    Aula 1 - Introdução a Docker Network
+
+        Docker Network é um sistema de rede virtual que permite a comunicação entre contêineres Docker. 
+        Ele cria uma camada de abstração sobre a rede física, permitindo que os contêineres se comuniquem entre si e com o mundo externo de maneira segura e isolada.
+        Com o Docker Network, você pode criar redes personalizadas, definir regras de firewall, atribuir endereços IP e gerenciar o tráfego de dados entre os contêineres.
+        Isso facilita a criação de ambientes complexos e escaláveis, onde diferentes serviços podem ser executados em contêineres separados, mas ainda assim se comunicarem de forma eficiente.
+        O Docker Network oferece vários tipos de redes, como bridge, host, overlay e macvlan, cada uma com suas próprias características e casos de uso.
+        A escolha do tipo de rede depende dos requisitos específicos da aplicação e da arquitetura desejada.
+
+
+    Aula 2 - Principais Redes disponiveis em Docker Network
+
+        Bridge Network (Ponte): É a rede padrão criada pelo Docker. Ela permite que os contêineres se comuniquem entre si dentro do mesmo host, mas isola o tráfego de rede do host e de outros contêineres. Cada contêiner recebe um endereço IP privado e pode se comunicar com outros contêineres na mesma rede bridge.
+
+        Host Network (Host): Nesse modo, o contêiner compartilha a pilha de rede do host. Isso significa que o contêiner não tem seu próprio endereço IP e usa o endereço IP do host para se comunicar com o mundo externo. Esse modo é útil quando você deseja que o contêiner tenha acesso direto à rede do host, mas pode apresentar riscos de segurança, pois o contêiner tem acesso total à rede do host.
+
+        Overlay Network (Sobreposição): Esse tipo de rede é usado em ambientes de cluster, como o Docker Swarm ou Kubernetes. Ele permite que os contêineres em diferentes hosts se comuniquem entre si como se estivessem na mesma rede local. A overlay network cria uma rede virtual sobre a infraestrutura física, facilitando a comunicação entre serviços distribuídos.
+
+        Macvlan Network: Esse modo permite que você atribua endereços MAC e IP diretamente aos contêineres, fazendo com que eles apareçam como dispositivos físicos na rede. Isso é útil quando você precisa que os contêineres sejam acessíveis diretamente na rede local, como em casos de integração com dispositivos físicos ou redes legadas.
+
+        None Network (Nenhuma): Nesse modo, o contêiner não tem acesso à rede. Ele é isolado completamente e não pode se comunicar com outros contêineres ou com o mundo externo. Esse modo é útil para casos em que você deseja executar um contêiner sem qualquer conectividade de rede.
+
+        A escolha do tipo de rede depende dos requisitos específicos da aplicação, da arquitetura desejada e das considerações de segurança.
+    
+    Aula 3 - Como o Bridge Network funciona
+
+        A Bridge Network é a rede padrão criada pelo Docker quando você instala o Docker Engine. 
+        Ela funciona como uma ponte virtual que conecta os contêineres em execução no mesmo host, permitindo que eles se comuniquem entre si.
+        Quando um contêiner é iniciado, ele é automaticamente conectado à rede bridge, a menos que você especifique uma rede diferente.
+        Cada contêiner recebe um endereço IP privado dentro da faixa de endereços da rede bridge, permitindo que eles se comuniquem usando esses endereços IP.
+        A Bridge Network isola o tráfego de rede do host e de outros contêineres, garantindo que os contêineres possam se comunicar apenas entre si e com o mundo externo através do host.
+        Isso proporciona um nível de segurança e isolamento, evitando interferências indesejadas entre os contêineres e o host.
+        A Bridge Network é útil para cenários em que você deseja que os contêineres se comuniquem entre si dentro do mesmo host, mas ainda assim mantenham um certo grau de isolamento e segurança.
+
+        como criar uma rede do tipo bridge:
+
+            docker network create --driver bridge alpine-net -- cria uma rede do tipo bridge
+            docker network ls -- lista as redes criadas
+            docker network inspect alpine-net -- inspeciona a rede criada
+            docker run -dit --name alpine --network alpine-net alpine ssh -- cria um container e conecta na rede criada
+            docker run -it --rm --network alpine-net --name alpine1 alpine sh -- cria um container e conecta na rede criada
+            docker run -it --rm --network alpine-net --name alpine2 alpine sh -- cria um container e conecta na rede criada
+            ping alpine1 -- dentro do container alpine2 para testar a comunicação entre os containers
+            ping alpine2 -- dentro do container alpine1 para testar a comunicação entre os containers
+            docker network rm alpine-net -- remove a rede criada
+        
+        Acessar redes e containers:
+            docker container attach alpine -- para acessar o container criado
+            docker container exec -it alpine sh -- para acessar o container criado
+            docker container stop alpine -- para parar o container criado
+            docker container rm alpine -- para remover o container criado
+            docker container ls -a -- lista os containers criados
+            docker container prune -- remove todos os containers parados
+            docker rmi <image_id> -- remove a imagem criada
+            docker images -- lista as imagens criadas
+
+    Aula 4 - Como o None Network funciona
+
+        O None Network é um modo de rede em que o contêiner não tem acesso à rede. 
+        Ele é isolado completamente e não pode se comunicar com outros contêineres ou com o mundo externo. 
+        Esse modo é útil para casos em que você deseja executar um contêiner sem qualquer conectividade de rede.
+        Quando um contêiner é iniciado com o modo None Network, ele não recebe um endereço IP e não está conectado a nenhuma rede.
+        Isso significa que o contêiner não pode enviar ou receber tráfego de rede, tornando-o completamente isolado.
+        O None Network é útil para executar tarefas que não requerem conectividade de rede, como processamento de dados local, testes unitários ou execução de scripts que não dependem de recursos externos.
+        Ele também pode ser usado como uma medida de segurança para evitar que o contêiner tenha acesso à rede, reduzindo a superfície de ataque potencial.
+
+        como criar uma rede do tipo none:
+
+            docker network create --driver none isolated-net -- cria uma rede do tipo none
+            docker network ls -- lista as redes criadas
+            docker network inspect isolated-net -- inspeciona a rede criada
+            docker run -dit --name alpine --network isolated-net alpine ssh -- cria um container e conecta na rede criada
+            docker run -it --rm --network isolated-net --name alpine1 alpine sh -- cria um container e conecta na rede criada
+            docker run -it --rm --network isolated-net --name alpine2 alpine sh -- cria um container e conecta na rede criada
+            ping alpine1 -- dentro do container alpine2 para testar a comunicação entre os containers (não vai funcionar)
+            ping alpine2 -- dentro do container alpine1 para testar a comunicação entre os containers (não vai funcionar)
+            docker network rm isolated-net -- remove a rede criada
+        
+        Acessar redes e containers:
+            igual aula acima
+        
+    Aula 5 - Como Host and Overlay Network funciona:
+
+        O Host Network é um modo de rede em que o contêiner compartilha a pilha de rede do host. 
+        Isso significa que o contêiner não recebe um endereço IP separado, mas sim utiliza o endereço IP do host. 
+        O Host Network é útil para casos em que você deseja que o contêiner tenha desempenho de rede máximo e acesso direto à rede do host.
+        Quando um contêiner é iniciado com o modo Host Network, ele pode se comunicar diretamente com outros serviços na rede do host, sem a sobrecarga da virtualização de rede.
+        O Host Network é frequentemente usado em cenários de alta performance, como aplicações que exigem baixa latência ou alta largura de banda.
+
+        como criar uma rede do tipo host:
+
+            docker run -dit --name alpine --network host alpine ssh -- cria um container e conecta na rede do host
+            docker run -it --rm --network host --name alpine1 alpine sh -- cria um container e conecta na rede do host
+            docker run -it --rm --network host --name alpine2 alpine sh -- cria um container e conecta na rede do host
+            ping alpine1 -- dentro do container alpine2 para testar a comunicação entre os containers
+            ping alpine2 -- dentro do container alpine1 para testar a comunicação entre os containers
+
+        Acessar redes e containers:
+            igual aula acima
+
+
+    Aula 6 - Definindo redes com o Docker Compose
+
+        Atualizamos o docker-compose.yml para incluir a rede backend do tipo bridge
+        networks:
+          backend:
+            driver: bridge
+        E incluimos em cada serviço a rede backend
+        networks:
+          - backend
+        
+        Apos isso rodamos o projeot docker compose up -d --build
+        verificamos a rede com docker network ls
+        E podemos dar uns inspect com id do container para verificar tudo que foi criado
