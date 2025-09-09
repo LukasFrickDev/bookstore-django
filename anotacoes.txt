@@ -1,33 +1,828 @@
-Aula 5 - Começanmdo o projeto
+M11 - Configurando o Django Rest Framework
 
-    1 - Criamos um repositório do Git
-    2 - fizemos a instalação do poetry
-        Aqui para poder usar globalmente tivemos que fazer uma configuração ao Path do windows   
-            Siga estes passos para adicionar o Poetry ao PATH do Windows:
-                1 - Copie este caminho: C:\Users\frick\AppData\Roaming\Python\Python313\Scripts
-                2 - Abra o menu Iniciar e pesquise por “variáveis de ambiente”.
-                3 - Clique em “Editar variáveis de ambiente do sistema”.
-                4 - Na janela que abrir, clique em “Variáveis de Ambiente…”.
-                5 - Em “Variáveis de usuário”, selecione a variável chamada Path e clique em “Editar…”.
-                6 - Clique em “Novo” e cole o caminho copiado.
-                7 - Feche e reabra o terminal do VS Code.
+    Aula 1 - Introdução ao Django Rest Framework
+        O Django Rest Framework (DRF) é uma biblioteca poderosa e flexível para construir APIs web em Django. 
+        Ele facilita a criação de APIs RESTful, fornecendo ferramentas e funcionalidades que simplificam o desenvolvimento, como serialização de dados, autenticação, permissões e visualizações baseadas em classes.
+        O DRF é amplamente utilizado na comunidade Django devido à sua facilidade de uso e integração perfeita com o framework Django.
 
-        Caso não faça ainda é possivel utilizar o poetry com : python -m poetry --version
+    Aula 2 - Porque utilizar o Restfull Api Framework e quais as opções disponíveis no mercado
 
-    3 - iniciamos o poetry no terminal com : poetry init
-        e instalamos os pacotes pytest e factory-boy
+        O uso de um framework para construir APIs RESTful traz diversas vantagens, como padronização, segurança e agilidade no desenvolvimento. 
+        O Django Rest Framework (DRF) se destaca por sua integração com o Django, permitindo que desenvolvedores aproveitem suas funcionalidades e recursos já conhecidos.
 
-    4 - Adcionamos Django no poetry com : poetry add django
+        Comparando Django Rest Framework com React e Vue.js, é importante notar que o DRF é focado na construção de APIs back-end, enquanto React e Vue.js são bibliotecas/frameworks para construção de interfaces de usuário (front-end). O DRF pode ser utilizado em conjunto com React ou Vue.js para criar aplicações web completas, onde o DRF lida com a lógica do servidor e a comunicação com o banco de dados, enquanto React ou Vue.js gerenciam a interação do usuário e a apresentação dos dados.
 
-    5 - tive que criar uma pasta com o __init__.py
+        Além do DRF, existem outras opções no mercado, como Flask-RESTful, FastAPI e Express.js (para Node.js). 
+        Cada uma dessas ferramentas possui características específicas que podem ser mais adequadas dependendo do projeto e das necessidades da equipe de desenvolvimento.
 
-    6 - começar projeto com: poetry run django-admin.py startproject bookstore .
-        caso não vá verifique a versão poetry se necessário instale novamente
+    Aula 3 - Instalando Django Rest Framework
+        https://www.django-rest-framework.org/#installation
 
-    7 - Criamos um projeto de api
-        poetry run django-admin.py startapp api
-        e apos isso o migrate
-        poetry run python manage.py migrate
+    Aula 4 - Configurando
+        Instalando poetry ( é tipo um node do django)
+            pip install poetry
+            https://python-poetry.org/docs/#installing-with-the-official-installer
+        
+        Instalando black - formatação de código
+            pip3 install black
+            https://github.com/psf/black
 
-    8 - Rodando o servidor
+    Aula 5 - Começando o projeto
+
+        1 - Criamos um repositório do Git
+        2 - fizemos a instalação do poetry
+            Aqui para poder usar globalmente tivemos que fazer uma configuração ao Path do windows   
+                Siga estes passos para adicionar o Poetry ao PATH do Windows:
+                    1 - Copie este caminho: C:\Users\frick\AppData\Roaming\Python\Python313\Scripts
+                    2 - Abra o menu Iniciar e pesquise por “variáveis de ambiente”.
+                    3 - Clique em “Editar variáveis de ambiente do sistema”.
+                    4 - Na janela que abrir, clique em “Variáveis de Ambiente…”.
+                    5 - Em “Variáveis de usuário”, selecione a variável chamada Path e clique em “Editar…”.
+                    6 - Clique em “Novo” e cole o caminho copiado.
+                    7 - Feche e reabra o terminal do VS Code.
+
+            Caso não faça ainda é possivel utilizar o poetry com : python -m poetry --version
+
+        3 - iniciamos o poetry no terminal com : poetry init
+            e instalamos os pacotes pytest e factory-boy
+
+        4 - Adcionamos Django no poetry com : poetry add django
+
+        5 - tive que criar uma pasta com o __init__.py
+
+        6 - começar projeto com: poetry run django-admin.py startproject bookstore .
+            caso não vá verifique a versão poetry se necessário instale novamente
+
+        7 - Criamos um projeto de api
+            poetry run django-admin.py startapp api
+            e apos isso o migrate
+            poetry run python manage.py migrate
+
+        8 - Rodando o servidor
+            poetry run python manage.py runserver
+
+        9 - Instalando djangorestframework
+            poetry add djangorestframework
+
+            poetry update - para atualizar com novas dependencias o poetry.lock
+
+            em settings.py adcionar 'rest_framework' em INSTALLED_APPS
+
+            por ultimo rodar novamente com poetry run python manage.py runserver para ver se ainda está funcionando.
+
+M12 - Integrando Modelos e Serializers em Django Rest Framework
+
+    Aula 1 - Utilizando Django Serializers para tratar de modelos Django
+        o que é o Serializers:
+            O Serializers no Django Rest Framework (DRF) é uma ferramenta que facilita a conversão de dados complexos, 
+            como objetos de modelos Django, em formatos que podem ser facilmente renderizados em JSON, XML ou outros formatos. 
+            Ele também lida com a validação e desserialização de dados recebidos em solicitações HTTP, convertendo-os de volta para objetos Python.
+
+    Aula 2 - Como integrar Django Models e Django Serializers
+
+        Primeiro vamos criar 2 apps novos:
+            Order 
+            Product
+
+            poetry run python manage.py startapp order
+            poetry run python manage.py startapp product
+        
+        Vamos criar novos diretorios para organizar melhor o projeto:
+            Em order criamos a pasta models e um arquivo chamado order.py  e apagamos o models.py que vem na estrutura
+            Em product criamos a pasta models e um arquivo chamado product.py  e apagamos o models.py que vem na estrutura
+
+    Aula 3 - Criando Django Models para serem usado com Serializers
+
+        Incluimos os código para os models tanto para order quanto para product e incluimos em product o category tambem
+        alem disso ciramos um diretorio novo chamado serializer para cada app com os arquivo py já inclusos
+    
+    Aula 4 - Migrando Django Models
+
+        declarar/importar os modelos dentro de admin.py de cada app
+        from .models import Product, Category
+        from .models import Order
+
+        E exportar dentro dos __init__.py de cada app na pasta models
+
+        from .category import Category
+        from .product import Product
+        from .order import Order
+
+        Após isso declarar os apps dentro do bookstore project (settings.py)
+            Em INSTALLED_APPS incluir:
+                "order",
+                "product",
+        
+        Executamos o comando poetry run python manage.py makemigrations
+        Após executar o comando, devemos ver as migrações sendo criadas para os novos modelos.
+        Então executamos o poetry run python manage.py migrate
+
+        Caso ainda tenha o models.py nos apps apagar(já foi feito porem sempre verificar se realmente foi deletado)
+
+    Aula 5 - Criando Serializers em Django Rest Framework
+
+        Instalar dependencia:
+            poetry add django-rest-framework
+
+        Criamos os serializers para cada app e declaramos os models dentro de cada serializer.py
+        e por fim declaramos os serializers dentro dos __init__.py de cada app na pasta serializers
+
+        from .category_serializer import CategorySerializer
+        from .product_serializer import ProductSerializer
+        from .order_serializer import OrderSerializer
+
+    Aula 6 - Criando Factories com Django factory
+
+        Factory é usado para criar dados de teste automaticamente
+
+        criamos arquivos factories.py para os dois app e construir nossos testes
+        Isso agiliza para gerar dados e testes sem ter que criar na mão
+    
+M13 - ViewsSets em Django Rest Framework
+
+    Aula 1 - Introdução ao ViewSets do Django Rest Framework
+
+        O ViewSet no Django Rest Framework (DRF) é uma abstração que combina a lógica de visualização (views) e a lógica de roteamento (URLs) em uma única classe. 
+        Ele simplifica a criação de APIs RESTful, permitindo que você defina operações CRUD (Create, Read, Update, Delete) para um conjunto de recursos de maneira mais concisa e organizada.
+        Com o ViewSet, você pode definir métodos para lidar com diferentes ações, como listar todos os itens, recuperar um item específico, criar um novo item, atualizar um item existente e excluir um item.
+        O DRF fornece vários tipos de ViewSets, como ModelViewSet, ReadOnlyModelViewSet e GenericViewSet, cada um com diferentes níveis de funcionalidade e personalização.
+
+    Aula 2 e 3 -ViewSets para alteração e recuperação de dados:
+
+        criamos um novo diretorio chamado viewsets em cada app e criamos os arquivos:
+            product_views.py
+            order_viewsets.py
+
+        importamos em cada __init__.py de cada app na pasta viewsets
+            from .product_views import ProductViewSet
+            from .order_viewsets import OrderViewSet
+
+        fazemos isso para organizar melhor o projeto
+
+        Os pré requisitos para criar um ViewSet são:
+            1 - Ter um modelo Django (Django Model) definido.
+            2 - Ter um serializer criado para o modelo.
+            3 - Importar os módulos necessários do Django Rest Framework.
+            4 - Definir a classe do ViewSet, herdando de uma classe base apropriada.
+            5 - Configurar a queryset e o serializer_class dentro do ViewSet.
+
+    Aula 4 - Rotas customizadas em Django Rest Framework
+
+        Criamos um novo arquivo chamado urls.py dentro de cada app e declaramos as rotas para cada app
+        e por fim declaramos as urls dentro do __init__.py de cada app na pasta urls
+
+        from .order_urls import urlpatterns
+        from .product_urls import urlpatterns
+
+        Por fim declaramos as urls dos apps dentro do bookstore project (urls.py)
+
+            path('', include('order.urls')),
+            path('', include('product.urls')),
+
+        Em bookstore project (urls.py) importamos o include e re-path
+
+            from django.urls import path, re_path, include 
+        
+        incluimos o versionamento nas urls dos apps
+
+            re_path('bookstore/(?P<version>(v1|v2))/', include('order.urls')),
+            re_path('bookstore/(?P<version>(v1|v2))/', include('product.urls')),
+
+    Aula 5 - ViewSets Genéricas em Django Rest Framework
+
+
+        Instalar dependencia == poetry add django_extensions
+        Incluir django_extensions em settings.py INSTALLED_APPS
+            "django_extensions",
+
+        Após isso rodar o comando para verificar se as urls estão funcionando
+            poetry run python manage.py show_urls
+
+        Consguimos verificar os endpoints criados
+            bookstore/<version>/orders/ [name='order-list']
+            bookstore/<version>/orders/{pk}/ [name='order-detail']
+            bookstore/<version>/products/ [name='product-list']
+            bookstore/<version>/products/{pk}/ [name='product-detail']
+    
+    Aula 6 - Serializers e ViewSets
+
+        Atualizamos os serializers para incluir os campos de relacionamento
+        incluindo id para categorias e produtos nos dois apps tanto no order quanto no product
+
+    Aula 7 - Teste do ViewSets com o pacote de testes do Django Ret Framework
+
+        Criamos um diretorio chamado tests em cada app e criamos os arquivos:
+            test_product_viewsets.py
+            test_order_viewsets.py
+            test_category_vieswsets.py (opcional)
+
+        importamos em cada __init__.py de cada app na pasta tests
+            from .test_product_viewsets import ProductViewSetTest
+            from .test_order_viewsets import OrderViewSetTest
+
+        fazemos isso para organizar melhor o projeto
+
+        Para rodar os testes usamos o comando:
+            poetry run pytest -v tests/test_viewsets
+            ou 
+            poetry run python manage.py test
+
+        Caso queira rodar um teste especifico use:
+            poetry run python manage.py test order.tests.test_order_viewsets.OrderViewSetTest
+
+        Ou se quiser rodar um método especifico use:
+            poetry run python manage.py test order.tests.test_order_viewsets.OrderViewSetTest.test_create_order
+        
+M14 - Paginação Django Rest Framework
+
+    Aula 1 - Porque utilziar paginação?
+        A paginação é uma técnica usada para dividir grandes conjuntos de dados em partes menores e mais gerenciáveis, chamadas de páginas. 
+        Isso é especialmente útil em aplicações web e APIs, onde a quantidade de dados pode ser muito grande para ser carregada ou exibida de uma só vez.
+        A paginação melhora a performance, reduz o tempo de carregamento, economiza largura de banda, melhora a experiência do usuário e facilita a navegação pelos dados.
+        Em resumo, a paginação é uma prática essencial para lidar com grandes volumes de dados de maneira eficiente e amigável ao usuário.
+
+
+    Aula 2 - Introdução a paginação em Django Rest Framework
+
+        O Django Rest Framework (DRF) oferece suporte integrado para paginação, permitindo que você divida grandes conjuntos de dados em páginas menores e mais gerenciáveis. 
+        Isso é especialmente útil ao lidar com APIs que retornam listas de recursos, onde a quantidade de dados pode ser muito grande para ser carregada ou exibida de uma só vez.
+        O DRF fornece várias classes de paginação pré-definidas, como PageNumberPagination, LimitOffsetPagination e CursorPagination, cada uma com diferentes estratégias de paginação.
+        Você pode configurar a paginação globalmente no arquivo settings.py ou personalizar a paginação para visualizações específicas, definindo a classe de paginação desejada.
+
+        Incluir em settings.py
+            REST_FRAMEWORK = {
+                'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+                'PAGE_SIZE': 100,  # Número de itens por página
+            }   
+        
+        Rodamos o servidor e testamos os endpoints para ver se a paginação está funcionando corretamente.
         poetry run python manage.py runserver
+
+        A paginação deve estar funcionando corretamente, retornando um número limitado de itens por página, conforme configurado.
+        Conseguimos incluir dados para verificar a funcionalidade dos itens
+
+    Aula 3 - Adicionando dados para paginar
+
+        poetry run python manage.py shell_plus
+        from product.factories import ProductFactory
+        for _ in range(50):    //////////// para criar x produtos
+            ProductFactory()
+
+        Ao atualizar o endpoint de produtos, você deve ver que os resultados estão paginados, mostrando apenas o número de itens por página que você configurou (neste caso, 50).
+
+    Aula 4 - Adicionando Django Toolbar para comparar a paginação
+
+        Instalar dependencia == poetry add django-debug-toolbar
+        Incluir django_debug_toolbar em settings.py INSTALLED_APPS
+            "debug_toolbar",
+
+        Incluir em settings.py
+            MIDDLEWARE = [
+                ...
+                "debug_toolbar.middleware.DebugToolbarMiddleware",
+                ...
+            ]
+
+            INTERNAL_IPS = [
+                "127.0.0.1",
+            ]   
+
+        Incluir em bookstore project (urls.py)
+            import debug_toolbar
+            urlpatterns = [
+                ...
+                path('__debug__/', include(debug_toolbar.urls)),
+            ]   
+        Rodamos o servidor e testamos os endpoints para ver se a paginação está funcionando corretamente.
+    
+        poetry run python manage.py runserver
+        A paginação deve estar funcionando corretamente, retornando um número limitado de itens por página, conforme configurado.
+        Conseguimos incluir dados para verificar a funcionalidade dos itens
+
+    Aula 5 - Configurando Paginação
+
+        Adicionar paginação no settings.py
+        REST_FRAMEWORK = {
+            'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+            'PAGE_SIZE': 10,  # Número de itens por página
+        }
+
+M15 - Autenticação em Django Rest Framework
+
+    Aula 1 - Introdução a autenticação em Django Rest Framework
+
+        A autenticação no Django Rest Framework (DRF) é o processo de verificar a identidade dos usuários que tentam acessar recursos protegidos em uma API. 
+        O DRF oferece várias opções de autenticação, permitindo que você escolha o método mais adequado para sua aplicação.
+        Alguns dos métodos de autenticação mais comuns no DRF incluem:
+            1 - Autenticação por Token (TokenAuthentication): Cada usuário recebe um token exclusivo que deve ser incluído nas solicitações para acessar recursos protegidos.
+            2 - Autenticação por Sessão (SessionAuthentication): Utiliza sessões do Django para autenticar usuários, semelhante ao sistema de autenticação padrão do Django.
+            3 - Autenticação Básica (BasicAuthentication): Envia credenciais (nome de usuário e senha) em cada solicitação HTTP, codificadas em Base64.
+            4 - Autenticação OAuth: Permite a autenticação usando tokens OAuth, que são frequentemente usados para autorizar acesso a APIs de terceiros.
+
+        A escolha do método de autenticação depende dos requisitos de segurança e da arquitetura da sua aplicação.
+    
+    Aula 3 - configurando Django Rest Framework para autenticação
+
+        Incluir em settings.py
+            REST_FRAMEWORK = {
+                ...
+                'DEFAULT_AUTHENTICATION_CLASSES': [
+                    'rest_framework.authentication.BasicAuthentication',
+                    'rest_framework.authentication.SessionAuthentication',
+                ],
+                ...
+            }
+        Com essa configuração, o Django Rest Framework (DRF) usará autenticação básica e autenticação por sessão para proteger os endpoints da API.
+
+    Aula 4 - ViewSets protegidos com autenticação
+
+        Para proteger um ViewSet com autenticação no Django Rest Framework (DRF), você pode usar a classe de permissão IsAuthenticated. 
+        Isso garante que apenas usuários autenticados possam acessar os endpoints do ViewSet.
+        
+        No arquivo viewsets.py do app order, por exemplo, você pode adicionar a configuração de permissão da seguinte maneira:
+
+            from rest_framework.permissions import IsAuthenticated
+            from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+
+            class OrderViewSet(viewsets.ModelViewSet):
+                queryset = Order.objects.all()
+                serializer_class = OrderSerializer
+                permission_classes = [IsAuthenticated]  # Adiciona a permissão de autenticação
+                authentication_classes = [SessionAuthentication, BasicAuthentication]
+
+        Com essa configuração, qualquer tentativa de acessar os endpoints do OrderViewSet sem estar autenticado resultará em uma resposta 401 Unauthorized.
+
+    Aula 5 - Basic authentication
+
+        A autenticação básica (Basic Authentication) é um método simples de autenticação HTTP que envolve o envio de credenciais (nome de usuário e senha) em cada solicitação HTTP. 
+        Essas credenciais são codificadas em Base64 e incluídas no cabeçalho Authorization da solicitação.
+        Embora a autenticação básica seja fácil de implementar, ela não é a mais segura, pois as credenciais são enviadas em texto simples (após a decodificação do Base64). 
+        Portanto, é altamente recomendável usar HTTPS para proteger as comunicações entre o cliente e o servidor ao usar autenticação básica.
+        No Django Rest Framework (DRF), você pode habilitar a autenticação básica adicionando 'rest_framework.authentication.BasicAuthentication' à configuração DEFAULT_AUTHENTICATION_CLASSES no arquivo settings.py.
+
+        criar um super usuario para testar a autenticação
+            poetry run python manage.py createsuperuser --username username --email user@example.com
+
+        
+        Rodamos o servidor e testamos os endpoints para ver se a autenticação está funcionando corretamente.
+            poetry run python manage.py runserver
+
+    Aula 6 - Token Authentication
+
+        A autenticação por token (Token Authentication) é um método de autenticação onde cada usuário recebe um token exclusivo que deve ser incluído nas solicitações para acessar recursos protegidos. 
+        Esse token é geralmente gerado após o usuário fazer login com suas credenciais (nome de usuário e senha) e é usado para autenticar solicitações subsequentes sem a necessidade de enviar as credenciais novamente.
+        No Django Rest Framework (DRF), você pode implementar a autenticação por token usando o módulo rest_framework.authtoken. 
+        Isso envolve adicionar o TokenAuthentication à configuração DEFAULT_AUTHENTICATION_CLASSES no arquivo settings.py, criar tokens para os usuários e configurar as visualizações para aceitar tokens nas solicitações.
+
+        Instalar dependencia == poetry add djangorestframework-authtoken
+        Incluir rest_framework.authtoken em settings.py INSTALLED_APPS
+            "rest_framework.authtoken",
+
+        Incluir em settings.py
+            REST_FRAMEWORK = {
+                ...
+                'DEFAULT_AUTHENTICATION_CLASSES': [
+                    'rest_framework.authentication.TokenAuthentication',
+                    'rest_framework.authentication.BasicAuthentication',
+                    'rest_framework.authentication.SessionAuthentication',
+                ],
+                ...
+            }
+        
+        Incluimos dentro de urls no bookstore project (urls.py)
+            from rest_framework.authtoken.views import obtain_auth_token
+
+            urlpatterns = [
+                ...
+                path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
+                ...
+            ]
+
+            isso faz com que o endpoint api-token-auth/ esteja disponível para obter tokens de autenticação.
+            e toda vez que um usuário fizer uma solicitação POST para esse endpoint com suas credenciais (nome de usuário e senha), ele receberá um token de autenticação em resposta.
+
+        Incluimos os imports de TokenAuthentication em cada viewset
+            from rest_framework.authentication import TokenAuthentication
+        
+        Rodamos o comando para criar a tabela de tokens
+            poetry run python manage.py migrate
+
+        Criar tokens para os usuários
+            poetry run python manage.py drf_create_token <username>
+
+        Rodamos o servidor e testamos os endpoints para ver se a autenticação por token está funcionando corretamente.
+            poetry run python manage.py runserver
+
+        No postman em Header incluimos em Key Authorization e no Value colocamos Token <o token gerado>  anteriormente
+
+    
+    Aula 7 - Teste de segurança em Django Rest Framework
+
+        1- Protegendo os testes com autenticação
+            Atualizamos os testes para incluir autenticação, garantindo que apenas usuários autenticados possam acessar os endpoints protegidos.
+
+            Primeiro ajustamos os testes conforme a paginação incluindo o restults e o count
+            EX:
+                self.assertEqual(product_data['results'][0]['title'], self.product.title)
+                self.assertEqual(len(product_data['results']), 1)  # Verifica se há apenas 1 produto na página
+            
+            Incluimos em cada teste dos viewsets a autenticação
+
+                from rest_framework.authtoken.models import Token
+                from order.factories import UserFactory
+                
+                self.user = UserFactory()
+                self.client.force_authenticate(user=self.user)
+
+                Caso não tenha o self.user = UserFactory() criar o user factory
+                
+                Rodamos os testes para verificar se tudo está funcionando corretamente.
+                    poetry run pytest -v tests/test_viewsets
+                    ou 
+                    poetry run python manage.py tests/
+                    ou
+                    poetry run python tests/
+            
+
+        2 - resolvendo os Warnings
+            Atualizamos os testes para resolver os warnings relacionados à paginação e autenticação.
+                1 - Adicionamos a paginação nos testes conforme o item 1
+                2 - Adicionamos a autenticação nos testes conforme o item 1
+            Rodamos os testes novamente para garantir que os warnings foram resolvidos.
+                poetry run pytest -v tests/test_viewsets
+                ou 
+                poetry run python manage.py tests/
+                ou
+                poetry run python tests/
+
+            foi incluido o .order_by('id') em cada queryset dos viewsets para resolver o warning de ordenação
+                EX:
+                    class ProductViewSet(ModelViewSet):
+                        authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
+                        permission_classes = [IsAuthenticated]
+                    
+                        queryset = Product.objects.all().order_by('id')
+                        serializer_class = ProductSerializer
+            
+            E nas factories foi incluido o Meta com skip_postgeneration_save = True para resolver o warning de DeprecationWarning
+                EX:
+                    class ProductFactory(DjangoModelFactory):
+                        .....
+                    
+                        class Meta:
+                            model = Product
+                            skip_postgeneration_save = True
+
+
+M16 - Instalando Docker
+
+    Aula 1 - Introdução ao Docker
+
+        - Docker é uma plataforma de software que permite criar, testar e implantar aplicativos rapidamente.
+        - O Docker empacota o software em unidades padronizadas chamadas contêineres, que têm tudo o que o software precisa para funcionar, incluindo bibliotecas, ferramentas do sistema, código e tempo de execução.
+        - Os contêineres do Docker são leves e portáteis, facilitando a movimentação entre diferentes ambientes.
+
+    Aula 2 - Instalando Dockerclae
+
+        https://docs.docker.com/desktop/windows/install
+
+    Aula 3 - Criando usuario no Docker Hub
+
+        https://hub.docker.com/signup
+    
+    Aula 4 - Rodando imagens com Docker run
+        https://docs.docker.com/engine/reference/commandline/run/
+        docker run hello-world
+
+        o docker run faz o download da imagem hello-world do Docker Hub e a executa em um contêiner.
+        A imagem hello-world é uma imagem de teste simples que verifica se o Docker está instalado e funcionando corretamente no seu sistema.
+        Quando você executa o comando, ele cria um contêiner a partir da imagem hello-world e exibe uma mensagem de boas-vindas no terminal, confirmando que o Docker está operando corretamente.
+        Se você vir a mensagem de boas-vindas, significa que o Docker foi instalado com sucesso e está funcionando corretamente no seu sistema.
+        docker --- IGNORE ---
+        docker run hello-world
+
+    Aula 5 - Explorando o comando Docker run
+
+        https://docs.docker.com/engine/reference/commandline/run/
+        O comando docker run é usado para criar e iniciar um contêiner a partir de uma imagem Docker. 
+        Ele permite que você execute aplicativos isolados em contêineres, fornecendo um ambiente consistente e portátil.
+        A sintaxe básica do comando é:
+            docker run [opções] <imagem> [comando] [argumentos]
+        Onde:
+            - [opções]: São opções adicionais que você pode usar para configurar o contêiner, como definir variáveis de ambiente, mapear portas, montar volumes, entre outros.
+            - <imagem>: É o nome da imagem Docker que você deseja usar para criar o contêiner. Pode ser uma imagem local ou uma imagem hospedada em um registro, como o Docker Hub.
+            - [comando]: (Opcional) É o comando que você deseja executar dentro do contêiner. Se não for especificado, o contêiner executará o comando padrão definido na imagem.
+            - [argumentos]: (Opcional) São argumentos adicionais que você pode passar para o comando executado dentro do contêiner.
+
+        Exemplo simples:
+            docker run hello-world
+        Este comando cria e inicia um contêiner a partir da imagem hello-world, que exibe uma mensagem de boas-vindas no terminal.
+
+        Exemplo com opções:
+            docker run -d -p 8080:80 nginx
+        Este comando cria e inicia um contêiner em segundo plano (-d) a partir da imagem nginx, mapeando a porta 80 do contêiner para a porta 8080 do host (-p 8080:80).
+
+        O comando docker run é uma ferramenta poderosa para executar aplicativos em contêineres, permitindo que você aproveite os benefícios da virtualização leve e da portabilidade oferecida pelo Docker.    ]
+    
+        docker run -it --rm -d -p 8080:80 --name web nginx : 
+        -d = roda em segundo plano
+        -it = interativo
+        --rm = remove o container quando parar
+        --name web = nome do container
+        -p 8080:80 = mapeia a porta 80 do container(docker) para a porta 8080 do host
+        nginx = imagem
+
+        docker ps -- lista os containers em execução
+        docker ps -a -- lista todos os containers
+        docker stop <nome ou id do container> -- para o container
+        docker start <nome ou id do container> -- inicia o container
+
+    Aula 6 - Construindo nossa primeira imagem Docker   
+
+        https://docs.docker.com/engine/reference/commandline/build/
+        O comando docker build é usado para criar uma imagem Docker a partir de um arquivo Dockerfile. 
+        Ele lê as instruções no Dockerfile e executa cada etapa para construir a imagem, que pode ser usada posteriormente para criar contêineres.
+        A sintaxe básica do comando é:
+            docker build [opções] <caminho>
+        Onde:
+            - [opções]: São opções adicionais que você pode usar para configurar o processo de construção da imagem, como definir tags, especificar arquivos de contexto, entre outros.
+            - <caminho>: É o caminho para o diretório que contém o arquivo Dockerfile. Pode ser um caminho relativo ou absoluto.
+
+        Exemplo simples:
+            docker build -t minha-imagem .
+        Este comando cria uma imagem Docker chamada "minha-imagem" a partir do Dockerfile localizado no diretório atual (indicado pelo ponto ".").
+
+        Exemplo com opções:
+            docker build -t minha-imagem:1.0 -f /caminho/para/Dockerfile /caminho/para/contexto
+        Este comando cria uma imagem Docker chamada "minha-imagem" com a tag "1.0", usando um Dockerfile localizado em um caminho específico (-f) e um contexto de construção diferente.
+
+        O comando docker build é essencial para criar imagens personalizadas que atendam às necessidades específicas do seu aplicativo, permitindo que você defina o ambiente, as dependências e as configurações necessárias para executar seu software em contêineres Docker.
+
+
+        Criamos um Arquivo Dockerfile ( tem extensão mesmo e é um arquivo de texto simples)
+            # syntax=docker/dockerfile:1
+            FROM busybox
+            CMD echo "hello world"
+        
+        Rodamos o Build para criar a imagem 
+            docker build -t lukasfrick/ebac-fullstack-python .
+
+        Vamos dar o run para ver se realmente funcionou
+           docker run lukasfrick/ebac-fullstack-python
+
+        Por ultimo  push
+            docker push lukasfrick/ebac-fullstack-python
+
+M17 - Como imagens funcionam em Docker
+
+    Aula 2 - Como funciona o Dockerfile?
+        https://docs.docker.com/reference/dockerfile/
+        o docker image é como se fosse uma caixa e onde estara todo o ambiente
+
+    
+    Aula 3 - criando o dockerfile
+
+        FROM python:3.8.1-slim as python-base       ----- INSTRUÇÃO MAIS IMPORTANTE
+
+            # python
+        ENV PYTHONUNBUFFERED=1 \
+            # prevents python creating .pyc files
+            PYTHONDONTWRITEBYTECODE=1 \
+            \
+            # pip
+            PIP_NO_CACHE_DIR=off \
+            PIP_DISABLE_PIP_VERSION_CHECK=on \
+            PIP_DEFAULT_TIMEOUT=100 \
+            \
+            # poetry
+            # https://python-poetry.org/docs/configuration/#using-environment-variables
+            POETRY_VERSION=1.0.3 \
+            # make poetry install to this location
+            POETRY_HOME="/opt/poetry" \
+            # make poetry create the virtual environment in the project's root
+            # it gets named `.venv`
+            POETRY_VIRTUALENVS_IN_PROJECT=true \
+            # do not ask any interactive question
+            POETRY_NO_INTERACTION=1 \
+            \
+            # paths
+            # this is where our requirements + virtual environment will live
+            PYSETUP_PATH="/opt/pysetup" \
+            VENV_PATH="/opt/pysetup/.venv"
+
+
+        # prepend poetry and venv to path
+        ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
+
+        RUN apt-get update \
+            && apt-get install --no-install-recommends -y \
+                # deps for installing poetry
+                curl \
+                # deps for building python deps
+                build-essential
+
+        # install poetry - respects $POETRY_VERSION & $POETRY_HOME
+        RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
+
+        # install postgres dependencies inside of Docker
+        RUN apt-get update \
+            && apt-get -y install libpq-dev gcc \
+            && pip install psycopg2
+
+        # copy project requirement files here to ensure they will be cached.
+        WORKDIR $PYSETUP_PATH
+        COPY poetry.lock pyproject.toml ./
+
+        # install runtime deps - uses $POETRY_VIRTUALENVS_IN_PROJECT internally
+        RUN poetry install --no-dev
+
+        # quicker install as runtime deps are already installed
+        RUN poetry install
+
+        WORKDIR /app
+
+        COPY . /app/
+
+        EXPOSE 8000
+
+        CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+    
+    Aula 4 - Rodando nosso projeto utilizando Dockerfile 
+
+        criamos un arquvio Dockerfile na raiz do projeto 
+
+        Apos isso vamos construir nossa imagem a partir do Dockerfile
+        
+        docker build -t bookstore:latest .
+
+        Vamos execur a imagem 
+        docker run --name bookstore -d -p 8000:8000 bookstore:latest
+
+        retornando a hash da imagem : 4cc6d8be2e76154f288faa783fa61930574e3ee8f0f2b9e15918d89ed4937d0b
+
+        poetry run python manage.py runserver
+
+    Aula 5 - Definindo diretórios com Docker volumes
+
+        - Compartilhamento de dados entre múltiplos containers
+        - Acesso ao sistema de arquivos do hospedeiro não é garantido e/ou mais custoso
+        - Armazenamento não é local, os dados estarão num host remoto ou ate mesmo na nuvem
+        - Quando é preciso fazer um backup, uma restauração ou migrar dados entre hospedeiros do Docker
+
+M18 - Containers em Docker
+
+    Aula 1 - Introdução a Docker Container:
+
+        Essa é a parte da execução
+
+        Ele isola o aplicativo do sistema operacional.
+        Funciona sempre da mesma forma, não importa onde você o execute (Windows, Linux, servidor, etc.).
+        É mais leve que uma máquina virtual e inicia rapidamente.
+
+        Um Docker Container é como uma caixinha leve e portátil que contém tudo o que um aplicativo precisa para funcionar: código, bibliotecas, dependências e configurações.
+    
+    Aula 2 - Automatizando ambientes com Docker Container
+
+        O Docker seria uma "imagem" que é como se fosse um zip com tudo que aquele arquvio tem como uma base congelada
+        O Container é como se fosse a execução dessa "imagem"
+
+        Docker Compose:
+            É uma ferramente que automatiza o workflow/execução da aplicação
+    
+    Aula 3 - Introdução a Docker Compose
+
+        Em settings.py incluido mais dados no DATABASES no profile default e import os
+            import os
+
+            ....            
+            
+            DATABASES = {
+                "default": {
+                    "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
+                    "NAME": os.environ.get("SQL_DATABASE", BASE_DIR / "db.sqlite3"),
+                    "USER": os.environ.get("SQL_USER", "user"),
+                    "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
+                    "HOST": os.environ.get("SQL_HOST", "localhost"),
+                    "PORT": os.environ.get("SQL_PORT", "5432"),
+                }
+            }
+
+            ....
+            
+            Incluimos informações de portas para permitir que o django entenda que a aplicação esta sendo rodada dentro do container
+
+            SECRET_KEY = os.environ.get("SECRET_KEY")
+
+            DEBUG = int(os.environ.get("DEBUG", default=0))
+
+            # 'DJANGO_ALLOWED_HOSTS' should be a single string of hosts with a space between each.
+            # For example: 'DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
+            ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+
+    Aula 4 - Comandos em Docker Compose
+
+        criamos um arquivo na raiz chamdo env.db 
+        Esses são os valores definidos para inserir nas informações do db
+        Essas informações estamos preenchendo em DATABASES em setting.py que incluimos na ulitma Aula
+
+        instalar a biblioteca para conectar o projeto escrito em python para o postgres:
+            poetry add psycopg2-binary 
+    
+    Aula 5 - Criando um docker Compose
+
+        Incluimos '&& pip install psycopg2' do Dockerfile
+
+        Criamos o arquivo docker-compose.yml com os seguintes dados:
+
+            version: '3.9'
+
+            services:
+            web: 
+                build: . 
+                command: sh -c "sleep 10 && python manage.py runserver 0.0.0.0:8000"    ////// sh -c "sleep 10 && ....." isso serve para dar um delay no db e funcionar melhor
+                volumes:
+                - .:/usr/src/app/
+                ports:
+                - 8000:8000
+                env_file:
+                - ./env.dev
+                depends_on:
+                - db
+            
+            db:
+                image: postgres:13.0-alpine
+                volumes:
+                - postgres_data:/var/lib/postgresql/data/
+                environment:
+                - POSTGRES_USER=dev
+                - POSTGRES_PASSWORD=dev
+                - POSTGRES_DB=bookstore_db
+
+            volumes:
+            postgres_data:
+        
+        Após essa configuração vamos fazer a build da imagem
+         docker compose up -d --build
+
+        docker ps para verificar se os containers estão rodando
+    
+        docker-compose up para rodar os containers
+
+        docker-compose logs <log da imagem> para ver os logs dos containers e rodar a aplicação
+
+        docker-compose exec web python manage.py migrate --noinput ---- para rodar as migrations
+
+        comandos extras:
+        docker-compose down para parar os containers
+        docker-compose down -v para parar os containers e remover os volumes
+
+    Aula 6 - Como analiser log e como o Docker compose funciona internamente
+
+        1 - Comando para acessar o container
+
+            docker exec -it 7e485caa5d2d /bin/bash
+
+                7e485caa5d2d = id do container que queremos acessar
+
+                7e485caa5d2d é o ID do contêiner que você deseja acessar. Você pode obter esse ID executando o comando docker ps, que lista todos os contêineres em execução junto com seus IDs.
+            
+            # Agora estamos dentro do container e podemos executar comandos diretamente nele
+            # Por exemplo, podemos rodar as migrations do Django aqui
+                python manage.py migrate --noinput
+
+        2 - Criando arquvio Makefile e instalando o make
+            Instalar dependencia == poetry add make
+            Criar o arquivo Makefile na raiz do projeto
+
+            winget install --id ezwinports.make
+            poetry add --dev flake8 black mypy
+
+            make
+            make check
+            make format-py
+
+            .PHONY: help run stop logs migrate createsuperuser test shell
+
+            help: ## Mostra essa ajuda
+                @grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+            run: ## Sobe os containers
+                docker compose up -d --build
+
+            stop: ## Para os containers
+                docker compose down -v
+
+            logs: ## Mostra os logs dos containers
+                docker compose logs -f
+
+            migrate: ## Roda as migrations
+                docker compose exec web python manage.py migrate --noinput
+
+            createsuperuser: ## Cria um super usuário
+                docker compose exec web python manage.py createsuperuser
+
+            test: ## Roda os testes
+                docker compose exec web pytest -v
+
+            shell: ## Acessa o shell do container web
+                docker compose exec web /bin/bash
