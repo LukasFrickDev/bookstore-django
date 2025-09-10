@@ -1086,4 +1086,23 @@ M21  - Continuous Delivery
         Alterar as variaveis de ambiente na plataforma escolhida
     
     EXTRA - Usando PythonAnyWhere para fazer deploy da api seguindo a apostila 
+        
+        Configurando MySql no PythonAnyWhere
+            https://help.pythonanywhere.com/pages/UsingMySQL/
 
+            No painel do PythonAnywhere, vá em Databases.
+
+            Crie um novo banco MySQL (anote o nome, usuário, senha e host).
+
+            No seu settings.py, configure:
+            DATABASES = {
+                'default': {
+                    'ENGINE': 'django.db.backends.mysql',
+                    'NAME': 'seu_nome_de_banco',
+                    'USER': 'seu_usuario',
+                    'PASSWORD': 'sua_senha',
+                    'HOST': 'seu_host',  # geralmente algo como seu_usuario.mysql.pythonanywhere-services.com
+                    'PORT': '3306',
+                }
+            }
+                    
