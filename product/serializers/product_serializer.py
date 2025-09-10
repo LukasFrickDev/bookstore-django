@@ -6,9 +6,12 @@ from product.serializers.category_serializer import CategorySerializer
 
 class ProductSerializer(serializers.ModelSerializer):
     categories = CategorySerializer(read_only=True, many=True)
-    categories_id = serializers.PrimaryKeyRelatedField(
-        queryset=Category.objects.all(), write_only=True, many=True
-    )
+    categories_id = serializers.SlugRelatedField(
+    slug_field="title",
+    queryset=Category.objects.all(),
+    write_only=True,
+    many=True,
+)
 
     class Meta:
         model = Product
