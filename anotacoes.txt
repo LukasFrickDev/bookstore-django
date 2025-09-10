@@ -1013,6 +1013,8 @@ M20 - Continuous Integration / Entrega Continua
 
     Aula 6 - Automatizando build com o GitHub Actions
 
+        Foi removido temporariamente as autenticações do viewstes do projeto para fazer os testes e rodar o github actions
+    
         Inclui ports no docker-compose.yml em db
             ports:
               - 5432:5432
@@ -1021,6 +1023,67 @@ M20 - Continuous Integration / Entrega Continua
               - app_data:/usr/src/app/
               - postgres_data:/var/lib/postgresql/data/
 
+M21  - Continuous Delivery  
 
-        
+    Aula 1 - Introdução a entrega continua 
+
+        a main branch deve estar sempre pronta para produção
+        O objetivo principal da Entrega Contínua é garantir que o software esteja sempre em um estado pronto para ser implantado em produção, permitindo que as equipes de desenvolvimento possam lançar novas funcionalidades, correções de bugs e melhorias de forma rápida, segura e frequente.
+        A Entrega Contínua envolve a automação de várias etapas do ciclo de vida do desenvolvimento de software, incluindo integração contínua (CI), testes automatizados, construção (build) do software, implantação (deployment) e monitoramento.
+        Com a Entrega Contínua, as equipes podem detectar e corrigir problemas mais rapidamente, melhorar a qualidade do software e responder às necessidades dos clientes de forma mais ágil.
+        Essa prática é frequentemente associada a metodologias ágeis e DevOps, promovendo uma cultura de colaboração entre desenvolvedores, operações e outras partes interessadas no processo de entrega de software.
+    
+    Aula 2 - Principais ferramentas de CD
+
+        - Jenkins: Uma das ferramentas de automação mais populares, permitindo a integração e entrega contínua.
+        - GitLab CI/CD: Integrado ao GitLab, oferece pipelines de CI/CD para automação de testes e implantações.
+        - CircleCI: Uma plataforma de CI/CD baseada em nuvem que permite a automação de testes e implantações.
+        - Travis CI: Um serviço de CI/CD que se integra ao GitHub para automação de testes e implantações.
+        - GitHub Actions: Permite a automação de fluxos de trabalho diretamente no GitHub, incluindo CI/CD.
+        - Heroku: Uma plataforma de nuvem que facilita a implantação contínua de aplicativos.
+
+    
+    Aula 3 - Introdução ao Heroku
+
+        Heroku é uma plataforma de nuvem que permite aos desenvolvedores construir, executar e operar aplicativos inteiramente na nuvem. 
+        Ela oferece uma infraestrutura gerenciada que simplifica o processo de implantação e escalabilidade de aplicativos, permitindo que os desenvolvedores se concentrem no código e na funcionalidade do aplicativo, em vez de se preocupar com a infraestrutura subjacente.
+        Com o Heroku, os desenvolvedores podem criar aplicativos em várias linguagens de programação, como Ruby, Python, Java, Node.js, PHP, Go e muitos outros. 
+        A plataforma oferece uma série de serviços integrados, como bancos de dados, armazenamento de arquivos, monitoramento e análise, facilitando a construção de aplicativos complexos.
+        O Heroku utiliza um modelo de "dynos", que são contêineres leves que executam o código do aplicativo. 
+        Isso permite que os aplicativos sejam facilmente dimensionados para lidar com diferentes níveis de tráfego, simplesmente ajustando o número de dynos em execução.
+        Além disso, o Heroku oferece uma interface de linha de comando (CLI) e uma interface web intuitiva para gerenciar aplicativos, configurar serviços e monitorar o desempenho.    
+
+    Aula 4 - Configurando o Heroku/ Criando app no Heroku
+        Heroku ficou pago ver mais a frente outra plataforma tipo a PythonAnywhere
+
+    Aula 5 e 6 - Preparando o ambiente para o deploy
+
+        atualizamos o README.md com as informações do projeto
+        Incluímos no pyproject.toml as dependências do whitenoise e gunicorn
+        whitenoise = "^6.10.0"
+        gunicorn = "^23.0.0"
+
+        poetry add whitenoise gunicorn  
+
+        Atualizamos o settings.py com as seguintes informações:
+
+            MIDDLEWARE = [
+                ...
+                "whitenoise.middleware.WhiteNoiseMiddleware",     //// Funciona como cascata, então sempre que for sobre seguranca colocar acima 
+                ...
+            ]
+
+            STATIC_ROOT = BASE_DIR / "staticfiles"
+
+            STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+            ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(" ")
+
+    Aula 7 - deploy 
+
+        Estar dentro da main branch
+
+    Aula 8 - Configurando o postgres
+        Alterar as variaveis de ambiente na plataforma escolhida
+    
+    EXTRA - Usando PythonAnyWhere para fazer deploy da api seguindo a apostila 
 
