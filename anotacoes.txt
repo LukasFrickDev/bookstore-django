@@ -1086,6 +1086,23 @@ M21  - Continuous Delivery
         Alterar as variaveis de ambiente na plataforma escolhida
     
     EXTRA - Usando PythonAnyWhere para fazer deploy da api seguindo a apostila 
+
+        WSGI:
+         # +++++++++++ DJANGO +++++++++++
+            import os
+            import sys
+
+            path = '/home/lukasfrick/bookstore-django'     ------Nome do diretorio do projeto
+            if path not in sys.path:
+                sys.path.append(path)
+
+            os.environ['DJANGO_SETTINGS_MODULE'] = 'bookstore.settings'   ------- Nome do projeto/diretorio onde esta o settings 
+
+            # then:
+            from django.core.wsgi import get_wsgi_application
+            application = get_wsgi_application()
+        # +++++++++++ DJANGO +++++++++++
+
         
         Configurando MySql no PythonAnyWhere
             https://help.pythonanywhere.com/pages/UsingMySQL/
@@ -1094,15 +1111,15 @@ M21  - Continuous Delivery
 
             Crie um novo banco MySQL (anote o nome, usuário, senha e host).
 
-            No seu settings.py, configure:
-            DATABASES = {
-                'default': {
-                    'ENGINE': 'django.db.backends.mysql',
-                    'NAME': 'seu_nome_de_banco',
-                    'USER': 'seu_usuario',
-                    'PASSWORD': 'sua_senha',
-                    'HOST': 'seu_host',  # geralmente algo como seu_usuario.mysql.pythonanywhere-services.com
-                    'PORT': '3306',
-                }
-            }
-                    
+            No env.dev incluir os dados que estão no db criado no pythonanywhere
+
+            Adaptei o projeto para usar MySQL ao invés de Postgres
+            Tanto no VScode quanto no pythonanywhere
+            poetry add mysqlclient
+            ou poetry add pymysql
+
+            em setting.py inclui o import pymysql
+
+            import pymysql
+
+            antes do "DATABASE:" colocar : pymysql.install_as_MySQLdb()
