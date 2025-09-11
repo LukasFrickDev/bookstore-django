@@ -1,10 +1,4 @@
 from rest_framework.viewsets import ModelViewSet
-# from rest_framework.permissions import IsAuthenticated
-# from rest_framework.authentication import (
-#     SessionAuthentication,
-#     BasicAuthentication,
-#     TokenAuthentication,
-# )
 
 from product.models import Category
 from product.serializers.category_serializer import CategorySerializer
@@ -12,12 +6,6 @@ from product.serializers.category_serializer import CategorySerializer
 
 class CategoryViewSet(ModelViewSet):
     serializer_class = CategorySerializer
-    # authentication_classes = [
-    #     SessionAuthentication,
-    #     BasicAuthentication,
-    #     TokenAuthentication,
-    # ]
-    # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return Category.objects.all().order_by("id")
